@@ -1,12 +1,15 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase,  AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.orm import DeclarativeBase
+from app.core.config import settings
 
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/ecommerce"
+DATABASE_URL = settings.DATABASE_URL
+
 engine = create_async_engine(
-    DATABASE_URL, 
+    DATABASE_URL,
     echo=True,
-    pool_size=5, 
-    max_overflow=10)
+    pool_size=5,
+    max_overflow=10
+)
 
 AsyncSessionLocal = async_sessionmaker(
     engine,

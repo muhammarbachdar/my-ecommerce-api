@@ -1,0 +1,164 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from typing import List
+from app.database import get_db
+from app.models import Cart, Product, User
+from app.schemas import CartCreate, CartResponse
+from app.core.security import get_current_user
+from app.utils.pagination import paginated_response
+
+router = APIRouter(prefix="/cart", tags=["cart"])
+
+@router.get("/", response_model=dict)
+async def get_cart(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    total_result = await db.execute(
+        select(func.count()).select_from(Cart).where(Cart.user_id == current_user.id)
+    )
+    total = total_result.scalar()
+    
+    result = await db.execute(
+        select(Cart)
+        .where(Cart.user_id == current_user.id)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .order_by(Cart.created_at.desc())
+    )
+    cart_items = result.scalars().all()
+    
+    response_items = []
+    for item in cart_items:
+        product_result = await db.execute(
+            select(Product).where(
+                Product.id == item.product_id,
+                Product.is_deleted == False
+            )
+        )
+        product = product_result.scalar_one_or_none()
+        if not product:
+            continue  # Skip produk yang sudah dihapus
+        
+        response_items.append({
+            "id": item.id,
+            "product_id": item.product_id,
+            "product_name": product.product_name,
+            "price": product.price,
+            "quantity": item.quantity,
+            "subtotal": product.price * item.quantity,
+            "created_at": item.created_at
+        })
+    
+    return paginated_response(response_items, page, limit, total)
+
+@router.post("/", response_model=CartResponse, status_code=201)
+async def add_to_cart(
+    cart_item: CartCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    product_result = await db.execute(
+        select(Product).where(
+            Product.id == cart_item.product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = product_result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    if product.stock < cart_item.quantity:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Insufficient stock. Available: {product.stock}"
+        )
+    
+    existing_result = await db.execute(
+        select(Cart).where(
+            Cart.user_id == current_user.id,
+            Cart.product_id == cart_item.product_id
+        )
+    )
+    existing = existing_result.scalar_one_or_none()
+    
+    if existing:
+        new_quantity = existing.quantity + cart_item.quantity
+        if product.stock < new_quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Cannot add {cart_item.quantity}. Max available: {product.stock - existing.quantity}"
+            )
+        existing.quantity = new_quantity
+        await db.commit()
+        await db.refresh(existing)
+        return existing
+    else:
+        db_cart = Cart(
+            user_id=current_user.id,
+            product_id=cart_item.product_id,
+            quantity=cart_item.quantity
+        )
+        db.add(db_cart)
+        await db.commit()
+        await db.refresh(db_cart)
+        return db_cart
+
+@router.put("/{item_id}", response_model=CartResponse)
+async def update_cart_item(
+    item_id: int,
+    quantity: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if quantity < 1:
+        raise HTTPException(status_code=400, detail="Quantity must be at least 1")
+    
+    result = await db.execute(
+        select(Cart).where(
+            Cart.id == item_id,
+            Cart.user_id == current_user.id
+        )
+    )
+    cart_item = result.scalar_one_or_none()
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Cart item not found")
+    
+    # Cek stok produk
+    product_result = await db.execute(
+        select(Product).where(Product.id == cart_item.product_id)
+    )
+    product = product_result.scalar_one_or_none()
+    if product and product.stock < quantity:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Insufficient stock. Available: {product.stock}"
+        )
+    
+    cart_item.quantity = quantity
+    await db.commit()
+    await db.refresh(cart_item)
+    return cart_item
+
+@router.delete("/{item_id}", status_code=204)
+async def remove_from_cart(
+    item_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Cart).where(
+            Cart.id == item_id,
+            Cart.user_id == current_user.id
+        )
+    )
+    cart_item = result.scalar_one_or_none()
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Cart item not found")
+    
+    await db.delete(cart_item)
+    await db.commit()
+    return None
