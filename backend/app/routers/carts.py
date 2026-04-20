@@ -8,7 +8,7 @@ from app.schemas import CartCreate, CartResponse
 from app.core.security import get_current_user
 from app.utils.pagination import paginated_response
 
-router = APIRouter(prefix="/cart", tags=["cart"])
+router = APIRouter(prefix="/carts", tags=["carts"])
 
 @router.get("/", response_model=dict)
 async def get_cart(

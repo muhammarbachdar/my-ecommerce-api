@@ -1,5 +1,5 @@
 from sqlalchemy import String, Float, Text, Integer, Boolean, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
 from app.database import Base
@@ -10,6 +10,8 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=True)  # ← TAMBAH
+    phone: Mapped[str] = mapped_column(String(20), nullable=True)  # ← TAMBAH
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -26,7 +28,8 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Float, nullable=False, index=True)
     stock: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
     image_url: Mapped[str] = mapped_column(String(500), nullable=True)
-    description: Mapped[str] = mapped_column(Text, nullable=True) 
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False) 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
@@ -44,6 +47,17 @@ class Cart(Base):
         default=lambda: datetime.now(timezone.utc)
     )
 
+class Wishlist(Base):
+    __tablename__ = "wishlists"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
 class Order(Base):
     __tablename__ = "orders"
 
@@ -56,6 +70,7 @@ class Order(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    items = relationship("OrderItem", back_populates="order", lazy="selectin")
 
 class OrderItem(Base):
     __tablename__ = "orders_items"
@@ -69,6 +84,23 @@ class OrderItem(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    order = relationship("Order", back_populates="items")
+    product = relationship("Product", lazy="selectin")
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
+    method: Mapped[str] = mapped_column(String(50), nullable=False)  # bank_transfer, credit_card, ewallet
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, paid, failed
+    payment_url: Mapped[str] = mapped_column(String(500), nullable=True)
+    paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )    
 
 class Category(Base):
     __tablename__ = "categories"
@@ -77,6 +109,91 @@ class Category(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     slug: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class Review(Base):
+    __tablename__ = "reviews"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    comment: Mapped[str] = mapped_column(Text, nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+class Voucher(Base):
+    __tablename__ = "vouchers"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    discount_type: Mapped[str] = mapped_column(String(20), nullable=False)  # percentage, fixed
+    discount_value: Mapped[float] = mapped_column(Float, nullable=False)
+    min_purchase: Mapped[float] = mapped_column(Float, default=0)
+    max_discount: Mapped[float] = mapped_column(Float, nullable=True)
+    usage_limit: Mapped[int] = mapped_column(Integer, default=1)
+    usage_per_user: Mapped[int] = mapped_column(Integer, default=1)
+    used_count: Mapped[int] = mapped_column(Integer, default=0)
+    start_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    end_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class UserVoucher(Base):
+    __tablename__ = "user_vouchers"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id", ondelete="CASCADE"))
+    is_used: Mapped[bool] = mapped_column(Boolean, default=False)
+    claimed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    used_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class VoucherUsage(Base):
+    __tablename__ = "voucher_usages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"))
+    discount_amount: Mapped[float] = mapped_column(Float, nullable=False)
+    used_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class Address(Base):
+    __tablename__ = "addresses"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    label: Mapped[str] = mapped_column(String(50), nullable=False)  # "Rumah", "Kantor", "Orang Tua"
+    recipient_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    full_address: Mapped[str] = mapped_column(Text, nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False)
+    province: Mapped[str] = mapped_column(String(100), nullable=False)
+    postal_code: Mapped[str] = mapped_column(String(10), nullable=False)
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)

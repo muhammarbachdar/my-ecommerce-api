@@ -56,7 +56,7 @@ async def get_category(
 
 # ==================== ADMIN ONLY ENDPOINTS ====================
 
-@router.post("/admin/categories", response_model=CategoryResponse, status_code=201)
+@router.post("/categories", response_model=CategoryResponse, status_code=201)
 async def create_category(
     category: CategoryCreate,
     db: AsyncSession = Depends(get_db),
@@ -85,7 +85,7 @@ async def create_category(
     await db.refresh(db_category)
     return db_category
 
-@router.put("/admin/categories/{category_id}", response_model=CategoryResponse)
+@router.put("/categories/{category_id}", response_model=CategoryResponse)
 async def update_category(
     category_id: int,
     category_update: CategoryCreate,
@@ -127,7 +127,7 @@ async def update_category(
     await db.refresh(category)
     return category
 
-@router.delete("/admin/categories/{category_id}", status_code=204)
+@router.delete("/categories/{category_id}", status_code=204)
 async def delete_category(
     category_id: int,
     db: AsyncSession = Depends(get_db),

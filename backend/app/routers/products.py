@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
+from sqlalchemy import select, or_
+from typing import List, Optional
 from app.database import get_db
 from app.models import Product
 from app.schemas import ProductCreate, ProductResponse
 from app.core.security import require_admin
 from app.models import User
+from app.utils.uploader import upload_image
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -28,19 +30,35 @@ async def create_product(
     await db.refresh(db_product)
     return db_product
 
-# Get all products (hanya yang belum di-soft delete)
+# Get all products with search & filter (hanya yang belum di-soft delete)
 @router.get("/", response_model=List[ProductResponse])
 async def get_all_products(
     skip: int = 0,
     limit: int = 100,
+    q: Optional[str] = None,
+    category_id: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
     db: AsyncSession = Depends(get_db)
 ):
-    from sqlalchemy import select
+    query = select(Product).where(Product.is_deleted == False)
+    
+    # Search by product_name (case insensitive)
+    if q:
+        query = query.where(Product.product_name.ilike(f"%{q}%"))
+    
+    # Filter by category
+    if category_id:
+        query = query.where(Product.category_id == category_id)
+    
+    # Filter by price range
+    if min_price is not None:
+        query = query.where(Product.price >= min_price)
+    if max_price is not None:
+        query = query.where(Product.price <= max_price)
+    
     result = await db.execute(
-        select(Product)
-        .where(Product.is_deleted == False)
-        .offset(skip)
-        .limit(limit)
+        query.offset(skip).limit(limit).order_by(Product.id)
     )
     products = result.scalars().all()
     return products
@@ -51,7 +69,6 @@ async def get_product(
     product_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    from sqlalchemy import select
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -74,7 +91,6 @@ async def update_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    from sqlalchemy import select
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -105,7 +121,6 @@ async def delete_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    from sqlalchemy import select
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -119,7 +134,15 @@ async def delete_product(
             detail="Product not found"
         )
     
-    # Soft delete
     product.is_deleted = True
     await db.commit()
     return None
+
+# Upload product image (admin only)
+@router.post("/upload-image", status_code=201)
+async def upload_product_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(require_admin)
+):
+    url = await upload_image(file)
+    return {"image_url": url}
