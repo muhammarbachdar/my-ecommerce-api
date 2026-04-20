@@ -10,8 +10,6 @@ from app.utils.pagination import paginated_response
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-# ==================== USER ENDPOINTS ====================
-
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_profile(
     current_user: User = Depends(get_current_user)
@@ -43,8 +41,6 @@ async def get_current_user_orders(
     from app.routers.orders import get_user_orders
     return await get_user_orders(current_user.id, page, limit, db)
 
-# ==================== ADMIN ENDPOINTS ====================
-
 @router.get("/", response_model=dict)
 async def get_all_users(
     page: int = 1,
@@ -62,8 +58,8 @@ async def get_all_users(
         .order_by(User.id)
     )
     users = result.scalars().all()
-    
-    return paginated_response(users, page, limit, total)
+    user_schemas = [UserResponse.model_validate(user) for user in users]
+    return paginated_response(user_schemas, page, limit, total)
 
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user_by_id(
@@ -83,12 +79,8 @@ async def ban_user(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
-    # Cegah admin ban diri sendiri
     if user_id == admin.id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You cannot ban yourself"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You cannot ban yourself")
     
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()

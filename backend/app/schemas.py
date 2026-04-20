@@ -24,6 +24,10 @@ class UserResponse(BaseModel):
     id: int
     email: str
     is_active: bool
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    is_deleted: bool = False
+    is_admin: bool = False
 
     model_config = {"from_attributes": True}
 
