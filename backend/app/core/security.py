@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone
 from app.core.config import settings
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
@@ -11,7 +11,8 @@ from sqlalchemy import select
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-security = HTTPBearer()
+# HTTPBearer dengan auto_error=False agar tidak langsung 401 jika tidak ada header
+security = HTTPBearer(auto_error=False)
 
 # ========== HASH & VERIFY ==========
 def hash_password(password: str) -> str:
@@ -37,12 +38,29 @@ def create_refresh_token(data: dict) -> str:
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-# ========== GET CURRENT USER ==========
+# ========== GET CURRENT USER (mendukung header & cookie) ==========
 async def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db)
 ) -> User:
-    token = credentials.credentials
+    token = None
+
+    # 1. Prioritaskan header Authorization
+    if credentials:
+        token = credentials.credentials
+
+    # 2. Jika tidak ada, cek cookie 'access_token'
+    if not token:
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id = payload.get("sub")
@@ -50,7 +68,7 @@ async def get_current_user(
             raise HTTPException(status_code=401, detail="Invalid token")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
-    
+
     result = await db.execute(select(User).where(User.id == int(user_id)))
     user = result.scalar_one_or_none()
     if not user:
