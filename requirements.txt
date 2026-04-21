@@ -18,3 +18,4 @@ aiosqlite==0.20.0
 email-validator==2.1.0
 cloudinary==1.44.0
 python-multipart==0.0.20
+bcrypt==4.0.1
