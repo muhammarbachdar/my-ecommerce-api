@@ -2,15 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, products, categories, carts, users, orders, payments, wishlist, reviews, vouchers, addresses, admin
 
-app = FastAPI(title="E-commerce API", version="1.0.0")
+app = FastAPI(
+    title="E-commerce API", 
+    version="1.0.0",
+    redirect_slashes=False
+)
 
-# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:3001",
-        # tambahkan domain production nanti
     ],
     allow_credentials=True,
     allow_methods=["*"],
