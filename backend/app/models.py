@@ -29,7 +29,9 @@ class Product(Base):
     stock: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
     image_url: Mapped[str] = mapped_column(String(500), nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False) 
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=True)
+    category: Mapped["Category"] = relationship("Category", lazy="selectin") 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)

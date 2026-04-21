@@ -48,12 +48,14 @@ class ProductBase(BaseModel):
     stock: int
     image_url: Optional[str] = None
     description: Optional[str] = None
+    category_id: Optional[int] = None
 
 class ProductCreate(ProductBase):
     pass
 
 class ProductResponse(ProductBase):
     id: int
+    is_deleted: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -113,7 +115,7 @@ class OrderResponse(BaseModel):
 
 class PaymentCreate(BaseModel):
     order_id: int
-    method: str  # bank_transfer, credit_card, ewallet
+    method: str
 
 class PaymentResponse(BaseModel):
     id: int
@@ -143,7 +145,7 @@ class WishlistResponse(BaseModel):
 
 class ReviewCreate(BaseModel):
     product_id: int
-    rating: int = Field(ge=1, le=5)  # antara 1-5
+    rating: int = Field(ge=1, le=5)
     comment: Optional[str] = None
 
 class ReviewUpdate(BaseModel):
@@ -166,7 +168,7 @@ class VoucherCreate(BaseModel):
     code: str
     name: str
     description: Optional[str] = None
-    discount_type: str  # percentage, fixed
+    discount_type: str
     discount_value: float
     min_purchase: float = 0
     max_discount: Optional[float] = None

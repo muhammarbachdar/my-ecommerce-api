@@ -23,7 +23,8 @@ async def create_product(
         price=product.price,
         stock=product.stock,
         image_url=product.image_url,
-        description=product.description
+        description=product.description,
+        category_id=product.category_id  # ← tambahkan category_id
     )
     db.add(db_product)
     await db.commit()
@@ -43,15 +44,12 @@ async def get_all_products(
 ):
     query = select(Product).where(Product.is_deleted == False)
     
-    # Search by product_name (case insensitive)
     if q:
         query = query.where(Product.product_name.ilike(f"%{q}%"))
     
-    # Filter by category
     if category_id:
         query = query.where(Product.category_id == category_id)
     
-    # Filter by price range
     if min_price is not None:
         query = query.where(Product.price >= min_price)
     if max_price is not None:
@@ -109,6 +107,7 @@ async def update_product(
     product.stock = product_update.stock
     product.image_url = product_update.image_url
     product.description = product_update.description
+    product.category_id = product_update.category_id  # ← tambahkan update category_id
     
     await db.commit()
     await db.refresh(product)
