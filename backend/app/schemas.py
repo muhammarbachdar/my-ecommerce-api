@@ -108,6 +108,7 @@ class OrderResponse(BaseModel):
     user_id: int
     total_price: float
     status: str
+    shipping_address: Optional[str] = None
     created_at: datetime
     items: List[OrderItemResponse] = []
 

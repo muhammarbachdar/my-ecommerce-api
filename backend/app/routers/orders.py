@@ -282,5 +282,6 @@ async def update_order_status(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
+        "shipping_address": db_order.shipping_address,
         "items": items_response
     }
