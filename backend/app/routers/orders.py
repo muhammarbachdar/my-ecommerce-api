@@ -268,6 +268,7 @@ async def update_order_status(
     for item in order.items:
         items_response.append({
             "id": item.id,
+            "order_id": item.order_id,
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -282,6 +283,6 @@ async def update_order_status(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
-        "shipping_address": db_order.shipping_address,
+        "shipping_address": order.shipping_address,
         "items": items_response
     }
