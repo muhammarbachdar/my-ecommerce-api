@@ -40,7 +40,7 @@ async def get_user_orders(
         for item in order.items:
             items_response.append({
                 "id": item.id,
-                "order_id": item.order_id,  # ✅ FIX: added order_id
+                "order_id": item.order_id,
                 "product_id": item.product_id,
                 "product_name": item.product.product_name if item.product else "Unknown",
                 "quantity": item.quantity,
@@ -55,7 +55,7 @@ async def get_user_orders(
             "total_price": order.total_price,
             "status": order.status,
             "created_at": order.created_at,
-            "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
+            "shipping_address": order.shipping_address,
             "items": items_response
         })
     
@@ -135,7 +135,7 @@ async def create_order(
     for item in order.items:
         items_response.append({
             "id": item.id,
-            "order_id": item.order_id,  # ✅ FIX: added order_id
+            "order_id": item.order_id,
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -150,7 +150,7 @@ async def create_order(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
-        "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
+        "shipping_address": order.shipping_address,
         "items": items_response
     }
 
@@ -183,7 +183,7 @@ async def get_order_by_id(
     for item in order.items:
         items_response.append({
             "id": item.id,
-            "order_id": item.order_id,  # ✅ FIX: added order_id
+            "order_id": item.order_id,
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -198,7 +198,7 @@ async def get_order_by_id(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
-        "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
+        "shipping_address": order.shipping_address,
         "items": items_response
     }
 
@@ -227,7 +227,7 @@ async def get_all_orders(
         for item in order.items:
             items_response.append({
                 "id": item.id,
-                "order_id": item.order_id,  # ✅ FIX: added order_id
+                "order_id": item.order_id,
                 "product_id": item.product_id,
                 "product_name": item.product.product_name if item.product else "Unknown",
                 "quantity": item.quantity,
@@ -242,7 +242,7 @@ async def get_all_orders(
             "total_price": order.total_price,
             "status": order.status,
             "created_at": order.created_at,
-            "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
+            "shipping_address": order.shipping_address,
             "items": items_response
         })
     
@@ -268,6 +268,18 @@ async def update_order_status(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     
+    old_status = order.status
+    
+    # Jika status berubah menjadi cancelled, kembalikan stok
+    if status == "cancelled" and old_status != "cancelled":
+        for item in order.items:
+            product_result = await db.execute(
+                select(Product).where(Product.id == item.product_id)
+            )
+            product = product_result.scalar_one_or_none()
+            if product:
+                product.stock += item.quantity
+    
     order.status = status
     await db.commit()
     await db.refresh(order)
@@ -276,7 +288,7 @@ async def update_order_status(
     for item in order.items:
         items_response.append({
             "id": item.id,
-            "order_id": item.order_id,  # ✅ FIX: added order_id
+            "order_id": item.order_id,
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -291,6 +303,67 @@ async def update_order_status(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
-        "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
+        "shipping_address": order.shipping_address,
+        "items": items_response
+    }
+
+# ✅ ENDPOINT BARU: User Cancel Order
+@router.patch("/{order_id}/user-cancel", response_model=OrderResponse)
+async def user_cancel_order(
+    order_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.id == order_id)
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # Pastikan hanya pemilik pesanan yang bisa membatalkan
+    if order.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # Pastikan status masih pending
+    if order.status != "pending":
+        raise HTTPException(status_code=400, detail="Only pending orders can be cancelled")
+    
+    # Kembalikan stok produk
+    for item in order.items:
+        product_result = await db.execute(
+            select(Product).where(Product.id == item.product_id)
+        )
+        product = product_result.scalar_one_or_none()
+        if product:
+            product.stock += item.quantity
+    
+    # Ubah status menjadi cancelled
+    order.status = "cancelled"
+    await db.commit()
+    await db.refresh(order)
+    
+    items_response = []
+    for item in order.items:
+        items_response.append({
+            "id": item.id,
+            "order_id": item.order_id,
+            "product_id": item.product_id,
+            "product_name": item.product.product_name if item.product else "Unknown",
+            "quantity": item.quantity,
+            "price_at_purchase": item.price_at_purchase,
+            "subtotal": item.price_at_purchase * item.quantity,
+            "created_at": item.created_at
+        })
+    
+    return {
+        "id": order.id,
+        "user_id": order.user_id,
+        "total_price": order.total_price,
+        "status": order.status,
+        "created_at": order.created_at,
+        "shipping_address": order.shipping_address,
         "items": items_response
     }
