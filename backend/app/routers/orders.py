@@ -40,6 +40,7 @@ async def get_user_orders(
         for item in order.items:
             items_response.append({
                 "id": item.id,
+                "order_id": item.order_id,  # ✅ FIX: added order_id
                 "product_id": item.product_id,
                 "product_name": item.product.product_name if item.product else "Unknown",
                 "quantity": item.quantity,
@@ -54,6 +55,7 @@ async def get_user_orders(
             "total_price": order.total_price,
             "status": order.status,
             "created_at": order.created_at,
+            "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
             "items": items_response
         })
     
@@ -133,6 +135,7 @@ async def create_order(
     for item in order.items:
         items_response.append({
             "id": item.id,
+            "order_id": item.order_id,  # ✅ FIX: added order_id
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -147,6 +150,7 @@ async def create_order(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
+        "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
         "items": items_response
     }
 
@@ -179,6 +183,7 @@ async def get_order_by_id(
     for item in order.items:
         items_response.append({
             "id": item.id,
+            "order_id": item.order_id,  # ✅ FIX: added order_id
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -193,6 +198,7 @@ async def get_order_by_id(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
+        "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
         "items": items_response
     }
 
@@ -221,6 +227,7 @@ async def get_all_orders(
         for item in order.items:
             items_response.append({
                 "id": item.id,
+                "order_id": item.order_id,  # ✅ FIX: added order_id
                 "product_id": item.product_id,
                 "product_name": item.product.product_name if item.product else "Unknown",
                 "quantity": item.quantity,
@@ -235,6 +242,7 @@ async def get_all_orders(
             "total_price": order.total_price,
             "status": order.status,
             "created_at": order.created_at,
+            "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
             "items": items_response
         })
     
@@ -268,7 +276,7 @@ async def update_order_status(
     for item in order.items:
         items_response.append({
             "id": item.id,
-            "order_id": item.order_id,
+            "order_id": item.order_id,  # ✅ FIX: added order_id
             "product_id": item.product_id,
             "product_name": item.product.product_name if item.product else "Unknown",
             "quantity": item.quantity,
@@ -283,6 +291,6 @@ async def update_order_status(
         "total_price": order.total_price,
         "status": order.status,
         "created_at": order.created_at,
-        "shipping_address": order.shipping_address,
+        "shipping_address": order.shipping_address,  # ✅ FIX: added shipping_address
         "items": items_response
     }
