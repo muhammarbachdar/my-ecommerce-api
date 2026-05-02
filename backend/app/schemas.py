@@ -79,6 +79,9 @@ class CartCreate(BaseModel):
     product_id: int
     quantity: int = 1
 
+class CartUpdate(BaseModel):
+    quantity: int = Field(..., ge=1, description="Quantity must be at least 1")
+
 class CartResponse(BaseModel):
     id: int
     user_id: int

@@ -4,7 +4,7 @@ from sqlalchemy import select, func
 from typing import List
 from app.database import get_db
 from app.models import Cart, Product, User
-from app.schemas import CartCreate, CartResponse
+from app.schemas import CartCreate, CartUpdate, CartResponse
 from app.core.security import get_current_user
 from app.utils.pagination import paginated_response
 
@@ -69,12 +69,12 @@ async def add_to_cart(
     )
     product = product_result.scalar_one_or_none()
     if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
     
     if product.stock < cart_item.quantity:
         raise HTTPException(
             status_code=400,
-            detail=f"Insufficient stock. Available: {product.stock}"
+            detail=f"Stok tidak mencukupi. Tersedia: {product.stock}"
         )
     
     existing_result = await db.execute(
@@ -90,7 +90,7 @@ async def add_to_cart(
         if product.stock < new_quantity:
             raise HTTPException(
                 status_code=400,
-                detail=f"Cannot add {cart_item.quantity}. Max available: {product.stock - existing.quantity}"
+                detail=f"Tidak dapat menambah {cart_item.quantity}. Maksimal tersedia: {product.stock - existing.quantity}"
             )
         existing.quantity = new_quantity
         await db.commit()
@@ -110,12 +110,12 @@ async def add_to_cart(
 @router.put("/{item_id}", response_model=CartResponse)
 async def update_cart_item(
     item_id: int,
-    quantity: int,
+    cart_update: CartUpdate,  # Menggunakan Request Body, bukan Query Parameter
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    if quantity < 1:
-        raise HTTPException(status_code=400, detail="Quantity must be at least 1")
+    if cart_update.quantity < 1:
+        raise HTTPException(status_code=400, detail="Jumlah minimal adalah 1")
     
     result = await db.execute(
         select(Cart).where(
@@ -125,20 +125,20 @@ async def update_cart_item(
     )
     cart_item = result.scalar_one_or_none()
     if not cart_item:
-        raise HTTPException(status_code=404, detail="Cart item not found")
+        raise HTTPException(status_code=404, detail="Item keranjang tidak ditemukan")
     
     # Cek stok produk
     product_result = await db.execute(
         select(Product).where(Product.id == cart_item.product_id)
     )
     product = product_result.scalar_one_or_none()
-    if product and product.stock < quantity:
+    if product and product.stock < cart_update.quantity:
         raise HTTPException(
             status_code=400,
-            detail=f"Insufficient stock. Available: {product.stock}"
+            detail=f"Stok tidak mencukupi. Tersedia: {product.stock}"
         )
     
-    cart_item.quantity = quantity
+    cart_item.quantity = cart_update.quantity
     await db.commit()
     await db.refresh(cart_item)
     return cart_item
@@ -157,7 +157,7 @@ async def remove_from_cart(
     )
     cart_item = result.scalar_one_or_none()
     if not cart_item:
-        raise HTTPException(status_code=404, detail="Cart item not found")
+        raise HTTPException(status_code=404, detail="Item keranjang tidak ditemukan")
     
     await db.delete(cart_item)
     await db.commit()
