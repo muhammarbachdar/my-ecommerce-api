@@ -94,6 +94,7 @@ class CartResponse(BaseModel):
 # ==================== ORDER SCHEMAS ====================
 class OrderCreate(BaseModel):
     shipping_address: Optional[str] = None
+    cart_item_ids: List[int] = []  # ✅ TAMBAHAN: daftar ID item keranjang yang dipilih
 
 class OrderItemResponse(BaseModel):
     id: int

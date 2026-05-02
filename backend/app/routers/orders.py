@@ -67,17 +67,27 @@ async def create_order(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Ambil semua item keranjang user
     cart_result = await db.execute(
         select(Cart).where(Cart.user_id == current_user.id)
     )
-    cart_items = cart_result.scalars().all()
-    if not cart_items:
+    all_cart_items = cart_result.scalars().all()
+    
+    if not all_cart_items:
         raise HTTPException(status_code=400, detail="Cart is empty")
+    
+    # ✅ Filter hanya item yang dipilih (cart_item_ids)
+    selected_cart_item_ids = set(order_data.cart_item_ids)
+    cart_items_to_process = [item for item in all_cart_items if item.id in selected_cart_item_ids]
+    
+    if not cart_items_to_process:
+        raise HTTPException(status_code=400, detail="No items selected for checkout")
     
     order_items_data = []
     total_price = 0
     
-    for item in cart_items:
+    # Proses hanya item yang dipilih
+    for item in cart_items_to_process:
         product_result = await db.execute(
             select(Product).where(
                 Product.id == item.product_id,
@@ -94,6 +104,7 @@ async def create_order(
         subtotal = product.price * item.quantity
         total_price += subtotal
         order_items_data.append({
+            "cart_item_id": item.id,
             "product_id": item.product_id,
             "quantity": item.quantity,
             "price_at_purchase": product.price,
@@ -118,7 +129,8 @@ async def create_order(
         )
         db.add(db_item)
     
-    for item in cart_items:
+    # ✅ Hapus hanya item keranjang yang diproses
+    for item in cart_items_to_process:
         await db.delete(item)
     
     await db.commit()
