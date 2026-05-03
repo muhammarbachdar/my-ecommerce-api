@@ -50,7 +50,7 @@ async def get_category(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
     return category
 
-@router.post("/categories", response_model=CategoryResponse, status_code=201)
+@router.post("/", response_model=CategoryResponse, status_code=201)
 async def create_category(
     category: CategoryCreate,
     db: AsyncSession = Depends(get_db),
@@ -72,7 +72,7 @@ async def create_category(
     await db.refresh(db_category)
     return db_category
 
-@router.put("/categories/{category_id}", response_model=CategoryResponse)
+@router.put("/{category_id}", response_model=CategoryResponse)
 async def update_category(
     category_id: int,
     category_update: CategoryCreate,
@@ -106,7 +106,7 @@ async def update_category(
     await db.refresh(category)
     return category
 
-@router.delete("/categories/{category_id}", status_code=204)
+@router.delete("/{category_id}", status_code=204)
 async def delete_category(
     category_id: int,
     db: AsyncSession = Depends(get_db),
