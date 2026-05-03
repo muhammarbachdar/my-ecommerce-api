@@ -50,6 +50,7 @@ async def get_cart(
             "price": product.price,
             "quantity": item.quantity,
             "subtotal": product.price * item.quantity,
+            "product_image_url": product.image_url,
             "created_at": item.created_at
         })
     
