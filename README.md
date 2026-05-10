@@ -10,10 +10,6 @@
 
 ---
 
-## 🚀 Live Demo
-
-Test the API yourself:  
-👉 [https://my-ecommerce-api.up.railway.app/docs](https://my-ecommerce-api.up.railway.app/docs)
 
 ---
 
@@ -290,17 +286,3 @@ If this project helps you, please give it a ⭐ on GitHub!
 📞 Contact
 For support or custom development inquiries:
 📧 muhammarbachdar@gmail.com
-
-Built with ❤️ using FastAPI
-
-text
-
----
-
-## ✅ **Simpan README.md di Repo Private**
-
-```bash
-cd d:/ecomerce-api
-git add README.md
-git commit -m "docs: update README with live demo and purchase section"
-git push origin main
