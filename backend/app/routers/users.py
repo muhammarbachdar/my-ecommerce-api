@@ -8,7 +8,7 @@ from app.schemas import UserResponse, UserUpdate
 from app.core.security import get_current_user, require_admin
 from app.utils.pagination import paginated_response
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(tags=["users"])
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_profile(

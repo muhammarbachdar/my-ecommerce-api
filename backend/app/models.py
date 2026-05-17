@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
 from app.database import Base
+from app.core.enums import OrderStatus, PaymentStatus, DiscountType
 
 class User(Base):
     __tablename__ = "users"
@@ -31,7 +32,9 @@ class Product(Base):
     description: Mapped[str] = mapped_column(Text, nullable=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=True)
-    category: Mapped["Category"] = relationship("Category", lazy="selectin") 
+    category: Mapped["Category"] = relationship("Category", lazy="selectin")
+    average_rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    total_reviews: Mapped[int] = mapped_column(Integer, default=0, nullable=False) 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
@@ -45,9 +48,12 @@ class Cart(Base):
     product_id: Mapped[int] = mapped_column(ForeignKey('products.id'), index=True) 
     quantity: Mapped[int] = mapped_column(nullable=False, default=1)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
+        DateTime(timezone=True), 
         default=lambda: datetime.now(timezone.utc)
     )
+    product: Mapped["Product"] = relationship("Product", lazy="selectin")
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
 class Wishlist(Base):
     __tablename__ = "wishlists"
@@ -59,6 +65,9 @@ class Wishlist(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
 
 class Order(Base):
     __tablename__ = "orders"
@@ -66,13 +75,20 @@ class Order(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), index=True)
     total_price: Mapped[float] = mapped_column(Float, nullable=False)
-    status: Mapped[str] = mapped_column(String(20), default="pending")
+    status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING)
     shipping_address: Mapped[str] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
     items = relationship("OrderItem", back_populates="order", lazy="selectin")
+    applied_voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id"), nullable=True)
+    discount_amount: Mapped[float] = mapped_column(Float, default=0.0)
+    
+    # Relasi (opsional)
+    applied_voucher: Mapped["Voucher"] = relationship("Voucher", foreign_keys=[applied_voucher_id])
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
 class OrderItem(Base):
     __tablename__ = "orders_items"
@@ -94,16 +110,22 @@ class Payment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
-    method: Mapped[str] = mapped_column(String(50), nullable=False)  # bank_transfer, credit_card, ewallet
+    method: Mapped[str] = mapped_column(String(50), nullable=False)  # bank_transfer, credit_card, ewallet, xendit
     amount: Mapped[float] = mapped_column(Float, nullable=False)
-    status: Mapped[str] = mapped_column(String(20), default="pending")  # pending, paid, failed
-    payment_url: Mapped[str] = mapped_column(String(500), nullable=True)
+    status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING)
+    payment_url: Mapped[str] = mapped_column(String(500), nullable=True)  # URL dari Xendit
     paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
-    )    
-
+    )
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    
+    # Field baru untuk Xendit
+    xendit_invoice_id: Mapped[str] = mapped_column(String(100), nullable=True, index=True)
+    invoice_url: Mapped[str] = mapped_column(String(500), nullable=True)
+    
 class Category(Base):
     __tablename__ = "categories"
 
@@ -142,7 +164,7 @@ class Voucher(Base):
     code: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    discount_type: Mapped[str] = mapped_column(String(20), nullable=False)  # percentage, fixed
+    discount_type: Mapped[str] = mapped_column(String(20), default=DiscountType.PERCENTAGE)  # percentage, fixed
     discount_value: Mapped[float] = mapped_column(Float, nullable=False)
     min_purchase: Mapped[float] = mapped_column(Float, default=0)
     max_discount: Mapped[float] = mapped_column(Float, nullable=True)
@@ -200,6 +222,8 @@ class Address(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"

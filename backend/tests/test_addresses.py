@@ -34,7 +34,10 @@ async def test_get_my_addresses(client: AsyncClient, user_token):
     }, headers=headers)
     response = await client.get("/addresses/", headers=headers)
     assert response.status_code == 200
-    assert len(response.json()) >= 1
+    data = response.json()
+    # Response sekarang paginated: { "data": [...], "pagination": {...} }
+    assert "data" in data
+    assert len(data["data"]) >= 1
 
 @pytest.mark.asyncio
 async def test_update_address(client: AsyncClient, user_token):

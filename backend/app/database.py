@@ -12,7 +12,7 @@ if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
 # Buat engine
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,
+    echo=settings.DB_ECHO,   # FIX: gunakan dari env, default False
     pool_size=5,
     max_overflow=10
 )

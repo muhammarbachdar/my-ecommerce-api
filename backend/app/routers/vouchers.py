@@ -11,7 +11,7 @@ from app.schemas import (
 )
 from app.core.security import get_current_user, require_admin
 
-router = APIRouter(prefix="/vouchers", tags=["vouchers"])
+router = APIRouter(tags=["vouchers"])
 
 # ==================== ADMIN ENDPOINTS ====================
 
@@ -227,7 +227,7 @@ async def apply_voucher(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cek order
+    # 1. Cek order
     order_result = await db.execute(
         select(Order).where(
             Order.id == apply_data.order_id,
@@ -239,7 +239,11 @@ async def apply_voucher(
     if not order:
         raise HTTPException(status_code=404, detail="Order not found or already paid")
     
-    # Cek voucher
+    # 2. Cek apakah sudah pernah apply voucher
+    if order.applied_voucher_id is not None:
+        raise HTTPException(status_code=400, detail="Voucher already applied to this order")
+    
+    # 3. Cek voucher (sama seperti sebelumnya)
     now = datetime.now(timezone.utc)
     voucher_result = await db.execute(
         select(Voucher).where(
@@ -254,14 +258,14 @@ async def apply_voucher(
     if not voucher:
         raise HTTPException(status_code=400, detail="Invalid or expired voucher code")
     
-    # Cek min purchase
+    # 4. Cek min purchase (gunakan total_price asli, belum termasuk diskon)
     if order.total_price < voucher.min_purchase:
         raise HTTPException(
             status_code=400,
             detail=f"Minimum purchase Rp{int(voucher.min_purchase):,} required"
         )
     
-    # Cek usage per user
+    # 5. Cek usage per user (sama)
     user_usage = await db.execute(
         select(func.count()).select_from(VoucherUsage).where(
             VoucherUsage.user_id == current_user.id,
@@ -272,14 +276,7 @@ async def apply_voucher(
     if used_by_user >= voucher.usage_per_user:
         raise HTTPException(status_code=400, detail="Voucher usage limit reached for this user")
     
-    # Cek apakah voucher sudah pernah dipake untuk order ini
-    existing_usage = await db.execute(
-        select(VoucherUsage).where(VoucherUsage.order_id == apply_data.order_id)
-    )
-    if existing_usage.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Voucher already applied to this order")
-    
-    # Calculate discount
+    # 6. Hitung diskon
     if voucher.discount_type == "percentage":
         discount = order.total_price * voucher.discount_value / 100
         if voucher.max_discount and discount > voucher.max_discount:
@@ -287,15 +284,15 @@ async def apply_voucher(
     else:
         discount = min(voucher.discount_value, order.total_price)
     
-    original_total = order.total_price
-    final_price = original_total - discount
-    
-    # Update order total_price
-    order.total_price = final_price
+    # 7. Simpan voucher ke order (tanpa mengubah total_price)
+    order.applied_voucher_id = voucher.id
+    order.discount_amount = discount
     await db.commit()
     
+    # 8. Return hasil (final price tetap menggunakan diskon yang sudah dihitung)
+    final_price = order.total_price - discount
     return {
-        "original_total": original_total,
+        "original_total": order.total_price,
         "discount": discount,
         "final_total": final_price,
         "voucher_code": voucher.code,
@@ -321,35 +318,34 @@ async def confirm_voucher(
     if not order:
         raise HTTPException(status_code=404, detail="Order not found or not paid")
     
-    # Cek voucher
+    # Cek apakah sudah ada voucher applied
+    if order.applied_voucher_id is None:
+        raise HTTPException(status_code=400, detail="No voucher applied to this order")
+    
+    # Ambil voucher
     voucher_result = await db.execute(
-        select(Voucher).where(Voucher.code == apply_data.code.upper())
+        select(Voucher).where(Voucher.id == order.applied_voucher_id)
     )
     voucher = voucher_result.scalar_one_or_none()
     if not voucher:
         raise HTTPException(status_code=400, detail="Voucher not found")
     
-    # Hitung diskon
-    if voucher.discount_type == "percentage":
-        discount = order.total_price * voucher.discount_value / 100
-        if voucher.max_discount and discount > voucher.max_discount:
-            discount = voucher.max_discount
-    else:
-        discount = min(voucher.discount_value, order.total_price)
-    
     # Update voucher used_count
     voucher.used_count += 1
     
-    # Create voucher usage record
+    # Buat VoucherUsage record
     db_usage = VoucherUsage(
         voucher_id=voucher.id,
         user_id=current_user.id,
         order_id=order.id,
-        discount_amount=discount
+        discount_amount=order.discount_amount
     )
     db.add(db_usage)
     
-    # Update user_voucher if exists
+    # Update order total_price menjadi final (original - discount)
+    order.total_price = order.total_price - order.discount_amount
+    
+    # Update user_voucher jika ada
     user_voucher_result = await db.execute(
         select(UserVoucher).where(
             UserVoucher.user_id == current_user.id,

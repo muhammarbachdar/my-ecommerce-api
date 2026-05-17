@@ -7,45 +7,48 @@ from app.models import Order, OrderItem, Product, User
 from app.core.security import require_admin
 from app.models import User as UserModel
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(tags=["admin"])
 
 @router.get("/dashboard")
 async def get_dashboard(
     db: AsyncSession = Depends(get_db),
     admin: UserModel = Depends(require_admin)
 ):
-    # 1. Total products (baru!)
     total_products_result = await db.execute(
         select(func.count()).select_from(Product).where(Product.is_deleted == False)
     )
     total_products = total_products_result.scalar() or 0
 
-    # 2. Total orders
-    total_orders_result = await db.execute(select(func.count()).select_from(Order))
+    # FIX: tambah filter is_deleted=False untuk order
+    total_orders_result = await db.execute(
+        select(func.count()).select_from(Order).where(Order.is_deleted == False)
+    )
     total_orders = total_orders_result.scalar() or 0
 
-    # 3. Total revenue (dari order yang sudah paid)
     total_revenue_result = await db.execute(
-        select(func.sum(Order.total_price)).where(Order.status == "paid")
+        select(func.sum(Order.total_price)).where(
+            Order.status == "paid",
+            Order.is_deleted == False
+        )
     )
     total_revenue = total_revenue_result.scalar() or 0
 
-    # 4. Total users
     total_users_result = await db.execute(
         select(func.count()).select_from(User).where(User.is_deleted == False)
     )
     total_users = total_users_result.scalar() or 0
 
-    # 5. Orders by status
     statuses = ["pending", "paid", "shipped", "delivered", "cancelled"]
     orders_by_status = {}
     for status in statuses:
         count_result = await db.execute(
-            select(func.count()).select_from(Order).where(Order.status == status)
+            select(func.count()).select_from(Order).where(
+                Order.status == status,
+                Order.is_deleted == False
+            )
         )
         orders_by_status[status] = count_result.scalar() or 0
 
-    # 6. Top 5 products
     top_products_result = await db.execute(
         select(
             Product.id,
@@ -54,7 +57,7 @@ async def get_dashboard(
         )
         .join(OrderItem, Product.id == OrderItem.product_id)
         .join(Order, OrderItem.order_id == Order.id)
-        .where(Order.status == "paid")
+        .where(Order.status == "paid", Order.is_deleted == False)
         .group_by(Product.id, Product.product_name)
         .order_by(func.sum(OrderItem.quantity).desc())
         .limit(5)
@@ -64,7 +67,6 @@ async def get_dashboard(
         for row in top_products_result
     ]
 
-    # 7. Revenue per month (last 6 months)
     now = datetime.now(timezone.utc)
     revenue_by_month = []
     for i in range(5, -1, -1):
@@ -82,6 +84,7 @@ async def get_dashboard(
             select(func.sum(Order.total_price))
             .where(
                 Order.status == "paid",
+                Order.is_deleted == False,
                 Order.created_at >= month_start,
                 Order.created_at < next_month_start
             )
@@ -93,7 +96,7 @@ async def get_dashboard(
         })
 
     return {
-        "total_products": total_products,      # ← DITAMBAHKAN
+        "total_products": total_products,
         "total_orders": total_orders,
         "total_revenue": float(total_revenue),
         "total_users": total_users,

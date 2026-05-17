@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import Optional, List
 from datetime import datetime
+from app.core.enums import OrderStatus, PaymentStatus
 
 # ==================== AUTH SCHEMAS ====================
 class UserRegister(BaseModel):
@@ -50,6 +51,21 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     category_id: Optional[int] = None
 
+    # FIX: validasi price dan stock
+    @field_validator("price")
+    @classmethod
+    def price_positive(cls, v):
+        if v <= 0:
+            raise ValueError("Price must be greater than 0")
+        return v
+
+    @field_validator("stock")
+    @classmethod
+    def stock_non_negative(cls, v):
+        if v < 0:
+            raise ValueError("Stock cannot be negative")
+        return v
+
 class ProductCreate(ProductBase):
     pass
 
@@ -57,6 +73,8 @@ class ProductResponse(ProductBase):
     id: int
     is_deleted: bool = False
     created_at: datetime
+    average_rating: Optional[float] = 0.0
+    total_reviews: Optional[int] = 0
 
     model_config = {"from_attributes": True}
 
@@ -77,7 +95,7 @@ class CategoryResponse(CategoryBase):
 # ==================== CART SCHEMAS ====================
 class CartCreate(BaseModel):
     product_id: int
-    quantity: int = 1
+    quantity: int = Field(1, ge=1, description="Quantity must be at least 1")
 
 class CartUpdate(BaseModel):
     quantity: int = Field(..., ge=1, description="Quantity must be at least 1")
@@ -105,6 +123,7 @@ class OrderItemResponse(BaseModel):
     price_at_purchase: float
     subtotal: float
     created_at: datetime
+    
 
     model_config = {"from_attributes": True}
 
@@ -112,12 +131,15 @@ class OrderResponse(BaseModel):
     id: int
     user_id: int
     total_price: float
-    status: str
+    status: OrderStatus
     shipping_address: Optional[str] = None
     created_at: datetime
     items: List[OrderItemResponse] = []
 
     model_config = {"from_attributes": True}
+
+class OrderWithPaymentResponse(OrderResponse):
+    invoice_url: Optional[str] = None    
 
 class PaymentCreate(BaseModel):
     order_id: int
@@ -128,7 +150,7 @@ class PaymentResponse(BaseModel):
     order_id: int
     method: str
     amount: float
-    status: str
+    status: PaymentStatus
     payment_url: Optional[str] = None
     paid_at: Optional[datetime] = None
     created_at: datetime

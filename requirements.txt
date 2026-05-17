@@ -19,3 +19,6 @@ email-validator==2.1.0
 cloudinary==1.44.0
 python-multipart==0.0.20
 bcrypt==4.0.1
+slowapi==0.1.9
+loguru==0.7.2
+pyngrok==8.1.2

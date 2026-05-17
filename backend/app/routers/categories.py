@@ -9,7 +9,7 @@ from app.core.security import require_admin
 from app.models import User
 from app.utils.pagination import paginated_response
 
-router = APIRouter(prefix="/categories", tags=["categories"])
+router = APIRouter(tags=["categories"])
 
 @router.get("/", response_model=dict)
 async def get_all_categories(

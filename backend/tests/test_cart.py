@@ -3,7 +3,6 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_add_to_cart(client: AsyncClient, user_token, admin_token):
-    # Create product first
     headers_admin = {"Authorization": f"Bearer {admin_token}"}
     product_resp = await client.post("/products/", json={
         "product_name": "Cart Item",
@@ -33,7 +32,6 @@ async def test_get_cart(client: AsyncClient, user_token):
 
 @pytest.mark.asyncio
 async def test_update_cart_item(client: AsyncClient, user_token, admin_token):
-    # Create product & add to cart
     headers_admin = {"Authorization": f"Bearer {admin_token}"}
     prod = await client.post("/products/", json={
         "product_name": "Update Cart",
@@ -46,7 +44,7 @@ async def test_update_cart_item(client: AsyncClient, user_token, admin_token):
     add = await client.post("/carts/", json={"product_id": pid, "quantity": 1}, headers=headers_user)
     item_id = add.json()["id"]
     
-    update = await client.put(f"/carts/{item_id}", params={"quantity": 5}, headers=headers_user)
+    update = await client.put(f"/carts/{item_id}", json={"quantity": 5}, headers=headers_user)
     assert update.status_code == 200
     assert update.json()["quantity"] == 5
 

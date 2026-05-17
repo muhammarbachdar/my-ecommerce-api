@@ -12,7 +12,7 @@ async def test_get_categories_public(client: AsyncClient, test_category):
 @pytest.mark.asyncio
 async def test_create_category_admin(client: AsyncClient, admin_token):
     headers = {"Authorization": f"Bearer {admin_token}"}
-    response = await client.post("/categories/categories", json={
+    response = await client.post("/categories/", json={
         "name": "Clothing",
         "slug": "clothing"
     }, headers=headers)
@@ -21,17 +21,16 @@ async def test_create_category_admin(client: AsyncClient, admin_token):
 
 @pytest.mark.asyncio
 async def test_create_category_unauthorized(client: AsyncClient):
-    response = await client.post("/categories/categories", json={
+    response = await client.post("/categories/", json={
         "name": "Illegal",
         "slug": "illegal"
     })
-    # FastAPI returns 403 for missing role, not 401
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 @pytest.mark.asyncio
 async def test_update_category_admin(client: AsyncClient, admin_token, test_category):
     headers = {"Authorization": f"Bearer {admin_token}"}
-    response = await client.put(f"/categories/categories/{test_category.id}", json={
+    response = await client.put(f"/categories/{test_category.id}", json={
         "name": "Updated Electronics",
         "slug": "updated-elec"
     }, headers=headers)
@@ -41,5 +40,5 @@ async def test_update_category_admin(client: AsyncClient, admin_token, test_cate
 @pytest.mark.asyncio
 async def test_delete_category_admin(client: AsyncClient, admin_token, test_category):
     headers = {"Authorization": f"Bearer {admin_token}"}
-    response = await client.delete(f"/categories/categories/{test_category.id}", headers=headers)
+    response = await client.delete(f"/categories/{test_category.id}", headers=headers)
     assert response.status_code == 204

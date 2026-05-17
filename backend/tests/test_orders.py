@@ -12,9 +12,13 @@ async def test_checkout_creates_order(client: AsyncClient, user_token, admin_tok
     pid = prod.json()["id"]
     
     headers_user = {"Authorization": f"Bearer {user_token}"}
-    await client.post("/carts/", json={"product_id": pid, "quantity": 2}, headers=headers_user)
+    cart_resp = await client.post("/carts/", json={"product_id": pid, "quantity": 2}, headers=headers_user)
+    cart_item_id = cart_resp.json()["id"]
     
-    order_resp = await client.post("/orders/", json={"shipping_address": "Jl. Test No.1"}, headers=headers_user)
+    order_resp = await client.post("/orders/", json={
+        "shipping_address": "Jl. Test No.1",
+        "cart_item_ids": [cart_item_id]
+    }, headers=headers_user)
     assert order_resp.status_code == 201
     order_data = order_resp.json()
     assert order_data["status"] == "pending"
@@ -30,22 +34,20 @@ async def test_get_my_orders(client: AsyncClient, user_token):
 
 @pytest.mark.asyncio
 async def test_admin_update_order_status(client: AsyncClient, user_token, admin_token):
-    # First create order as user
     headers_user = {"Authorization": f"Bearer {user_token}"}
-    # Need a product in cart and checkout (simplify: reuse previous test or create new)
-    # For brevity, assume we have at least one order from previous test
-    # Get user orders to get order_id
     orders_resp = await client.get("/orders/me", headers=headers_user)
-    orders = orders_resp.json()["data"]
+    orders = orders_resp.json().get("data", [])
     if not orders:
-        # create one quickly
         headers_admin = {"Authorization": f"Bearer {admin_token}"}
         prod = await client.post("/products/", json={"product_name": "Status Test", "price": 1000, "stock": 10}, headers=headers_admin)
         pid = prod.json()["id"]
-        await client.post("/carts/", json={"product_id": pid, "quantity": 1}, headers=headers_user)
-        await client.post("/orders/", json={"shipping_address": "Addr"}, headers=headers_user)
+        cart_resp = await client.post("/carts/", json={"product_id": pid, "quantity": 1}, headers=headers_user)
+        cart_item_id = cart_resp.json()["id"]
+        await client.post("/orders/", json={"shipping_address": "Addr", "cart_item_ids": [cart_item_id]}, headers=headers_user)
         orders_resp = await client.get("/orders/me", headers=headers_user)
-        orders = orders_resp.json()["data"]
+        orders = orders_resp.json().get("data", [])
+    
+    assert len(orders) > 0, "No orders found to test"
     order_id = orders[0]["id"]
     
     headers_admin = {"Authorization": f"Bearer {admin_token}"}

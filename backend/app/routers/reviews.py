@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_
+from sqlalchemy import select, func, and_, update
 from typing import List, Optional
 from datetime import datetime, timezone
 from app.database import get_db
@@ -8,8 +8,24 @@ from app.models import Review, Product, Order, OrderItem, User
 from app.schemas import ReviewCreate, ReviewUpdate, ReviewResponse
 from app.core.security import get_current_user, require_admin
 
-router = APIRouter(prefix="/reviews", tags=["reviews"])
+router = APIRouter(tags=["reviews"])
 
+async def update_product_rating(db: AsyncSession, product_id: int):
+    """Hitung ulang average_rating dan total_reviews untuk suatu produk"""
+    result = await db.execute(
+        select(func.avg(Review.rating), func.count(Review.id))
+        .where(Review.product_id == product_id, Review.is_deleted == False)
+    )
+    avg_rating, total_reviews = result.first()
+    
+    await db.execute(
+        update(Product)
+        .where(Product.id == product_id)
+        .values(
+            average_rating=round(float(avg_rating), 1) if avg_rating else 0.0,
+            total_reviews=total_reviews or 0
+        )
+    )
 # ==================== USER ENDPOINTS ====================
 
 # Get reviews for a product
@@ -123,8 +139,9 @@ async def create_review(
         comment=review_data.comment
     )
     db.add(db_review)
+    await db.flush()  # agar product_id tersedia
+    await update_product_rating(db, review_data.product_id)
     await db.commit()
-    await db.refresh(db_review)
     
     return {
         "id": db_review.id,
@@ -163,8 +180,10 @@ async def update_review(
     
     review.updated_at = datetime.now(timezone.utc)
     
+# setelah update atribut review
+    await db.flush()
+    await update_product_rating(db, review.product_id)
     await db.commit()
-    await db.refresh(review)
     
     user_result = await db.execute(select(User).where(User.id == review.user_id))
     user = user_result.scalar_one_or_none()
@@ -199,8 +218,9 @@ async def delete_review(
         raise HTTPException(status_code=404, detail="Review not found")
     
     review.is_deleted = True
+    await db.flush()
+    await update_product_rating(db, review.product_id)
     await db.commit()
-    return None
 
 # ==================== ADMIN ENDPOINTS ====================
 
@@ -222,5 +242,6 @@ async def admin_delete_review(
         raise HTTPException(status_code=404, detail="Review not found")
     
     review.is_deleted = True
+    await db.flush()
+    await update_product_rating(db, review.product_id)
     await db.commit()
-    return None

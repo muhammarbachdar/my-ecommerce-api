@@ -8,8 +8,7 @@ async def test_create_product_unauthorized(client: AsyncClient):
         "price": 100,
         "stock": 10
     })
-    # FastAPI returns 403 for missing token/role
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 @pytest.mark.asyncio
 async def test_create_product_as_admin(client: AsyncClient, admin_token):
@@ -36,8 +35,9 @@ async def test_get_all_products(client: AsyncClient, admin_token):
     response = await client.get("/products/")
     assert response.status_code == 200
     data = response.json()
-    assert len(data) >= 1
-    assert data[0]["product_name"] == "Laptop"
+    assert "data" in data
+    assert len(data["data"]) >= 1
+    assert data["data"][0]["product_name"] == "Laptop"
 
 @pytest.mark.asyncio
 async def test_search_product(client: AsyncClient, admin_token):
@@ -50,7 +50,8 @@ async def test_search_product(client: AsyncClient, admin_token):
     response = await client.get("/products/?q=UniqueSearchMe")
     assert response.status_code == 200
     data = response.json()
-    assert any(p["product_name"] == "UniqueSearchMe" for p in data)
+    assert "data" in data
+    assert any(p["product_name"] == "UniqueSearchMe" for p in data["data"])
 
 @pytest.mark.asyncio
 async def test_update_product_admin(client: AsyncClient, admin_token):

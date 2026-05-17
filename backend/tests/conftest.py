@@ -2,9 +2,12 @@ import pytest
 from typing import AsyncGenerator
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from app.main import app
 from app.database import get_db, Base
 from app.core.security import hash_password
+from app.core.limiter import limiter
 from app.models import User, Product, Category, Order, OrderItem, Cart
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -18,6 +21,14 @@ async def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
+from app.core.limiter import limiter
+
+@pytest.fixture(autouse=True, scope="function")
+def disable_rate_limit():
+    limiter._storage.reset()
+    yield
+    limiter._storage.reset()
+
 @pytest.fixture(autouse=True, scope="function")
 async def setup_db():
     async with engine.begin() as conn:
@@ -28,7 +39,7 @@ async def setup_db():
 
 @pytest.fixture(scope="function")
 async def client() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test/api/v1") as client:
         yield client
 
 @pytest.fixture(scope="function")

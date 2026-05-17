@@ -18,8 +18,10 @@ async def test_get_wishlist(client: AsyncClient, user_token, test_product):
     response = await client.get("/wishlist/", headers=headers)
     assert response.status_code == 200
     data = response.json()
-    assert len(data) == 1
-    assert data[0]["product_id"] == test_product.id
+    # Response sekarang paginated: { "data": [...], "pagination": {...} }
+    assert "data" in data
+    assert len(data["data"]) == 1
+    assert data["data"][0]["product_id"] == test_product.id
 
 @pytest.mark.asyncio
 async def test_remove_from_wishlist(client: AsyncClient, user_token, test_product):
@@ -29,4 +31,6 @@ async def test_remove_from_wishlist(client: AsyncClient, user_token, test_produc
     assert delete_response.status_code == 204
     # Verify removal
     get_response = await client.get("/wishlist/", headers=headers)
-    assert len(get_response.json()) == 0
+    assert get_response.status_code == 200
+    data = get_response.json()
+    assert len(data["data"]) == 0
