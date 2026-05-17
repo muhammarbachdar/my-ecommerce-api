@@ -27,3 +27,10 @@ Thumbs.db
 *.log
 
 .venv312/
+
+# Additional
+*.sql
+*.bak
+ngrok.exe
+ngrok.yml
+logs/
