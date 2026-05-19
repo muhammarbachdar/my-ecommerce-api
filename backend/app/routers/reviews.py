@@ -121,6 +121,12 @@ async def create_review(
             status_code=403,
             detail="You can only review products you have purchased"
         )
+    # Tambahkan ini sebelum cek existing review
+    product_result = await db.execute(
+        select(Product).where(Product.id == review_data.product_id, Product.is_deleted == False)
+    )
+    if not product_result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Product not found")
     
     # Cek apakah user sudah pernah review produk ini
     existing_result = await db.execute(

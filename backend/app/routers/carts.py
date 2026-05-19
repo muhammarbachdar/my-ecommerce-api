@@ -1,3 +1,4 @@
+# === FILE: app/routers/carts.py ===
 # carts.py (LENGKAP - hanya update_cart_item yang berubah)
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -149,6 +150,9 @@ async def update_cart_item(
         select(Product).where(Product.id == cart_item.product_id).with_for_update()
     )
     product = product_result.scalar_one_or_none()
+    # [FIX] Guard clause untuk produk yang sudah di-soft-delete
+    if not product or product.is_deleted:
+        raise HTTPException(status_code=400, detail="Produk sudah tidak tersedia atau telah dihapus")
     if product and product.stock < cart_update.quantity:
         raise HTTPException(
             status_code=400,

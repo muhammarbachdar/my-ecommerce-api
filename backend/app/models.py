@@ -1,9 +1,9 @@
-# models.py
-
-from sqlalchemy import String, Float, Text, Integer, Boolean, DateTime
+# === FILE: app/models.py ===
+from sqlalchemy import String, Float, Text, Integer, Boolean, DateTime, UniqueConstraint, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
+from decimal import Decimal
 from app.database import Base
 from app.core.enums import OrderStatus, PaymentStatus, DiscountType
 
@@ -28,14 +28,14 @@ class Product(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     product_name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    price: Mapped[float] = mapped_column(Float, nullable=False, index=True)
+    price: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False, index=True)  # FIX: changed to Decimal
     stock: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
     image_url: Mapped[str] = mapped_column(String(500), nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=True)
     category: Mapped["Category"] = relationship("Category", lazy="selectin")
-    average_rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    average_rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)  # tetap Float
     total_reviews: Mapped[int] = mapped_column(Integer, default=0, nullable=False) 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -60,6 +60,8 @@ class Cart(Base):
 class Wishlist(Base):
     __tablename__ = "wishlists"
 
+    __table_args__ = (UniqueConstraint('user_id', 'product_id', name='uq_user_product_wishlist'),)  # FIX: added unique constraint
+
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
@@ -76,7 +78,7 @@ class Order(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), index=True)
-    total_price: Mapped[float] = mapped_column(Float, nullable=False)
+    total_price: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
     status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING)
     shipping_address: Mapped[str] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -85,8 +87,7 @@ class Order(Base):
     )
     items = relationship("OrderItem", back_populates="order", lazy="selectin")
     applied_voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id"), nullable=True)
-    discount_amount: Mapped[float] = mapped_column(Float, default=0.0)
-    
+    discount_amount: Mapped[Decimal] = mapped_column(Numeric(19, 4), default=Decimal("0"))  # FIX: changed to Decimal
     # Relasi (opsional)
     applied_voucher: Mapped["Voucher"] = relationship("Voucher", foreign_keys=[applied_voucher_id])
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -99,7 +100,7 @@ class OrderItem(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey('orders.id'), index=True)
     product_id: Mapped[int] = mapped_column(ForeignKey('products.id'), index=True) 
     quantity: Mapped[int] = mapped_column(nullable=False, default=1)
-    price_at_purchase: Mapped[float] = mapped_column(nullable=False)
+    price_at_purchase: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
@@ -113,7 +114,7 @@ class Payment(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
     method: Mapped[str] = mapped_column(String(50), nullable=False)  # bank_transfer, credit_card, ewallet, xendit
-    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    amount: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
     status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING)
     payment_url: Mapped[str] = mapped_column(String(500), nullable=True)  # URL dari Xendit
     paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -167,9 +168,9 @@ class Voucher(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=True)
     discount_type: Mapped[str] = mapped_column(String(20), default=DiscountType.PERCENTAGE)  # percentage, fixed
-    discount_value: Mapped[float] = mapped_column(Float, nullable=False)
-    min_purchase: Mapped[float] = mapped_column(Float, default=0)
-    max_discount: Mapped[float] = mapped_column(Float, nullable=True)
+    discount_value: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
+    min_purchase: Mapped[Decimal] = mapped_column(Numeric(19, 4), default=Decimal("0"))  # FIX: changed to Decimal
+    max_discount: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=True)  # FIX: changed to Decimal
     usage_limit: Mapped[int] = mapped_column(Integer, default=1)
     usage_per_user: Mapped[int] = mapped_column(Integer, default=1)
     used_count: Mapped[int] = mapped_column(Integer, default=0)
@@ -183,6 +184,9 @@ class Voucher(Base):
 
 class UserVoucher(Base):
     __tablename__ = "user_vouchers"
+
+    # [FIX] Tambah UniqueConstraint untuk mencegah duplikasi klaim voucher
+    __table_args__ = (UniqueConstraint('user_id', 'voucher_id', name='uq_user_voucher'),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
@@ -201,7 +205,7 @@ class VoucherUsage(Base):
     voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id", ondelete="CASCADE"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"))
-    discount_amount: Mapped[float] = mapped_column(Float, nullable=False)
+    discount_amount: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
     used_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)

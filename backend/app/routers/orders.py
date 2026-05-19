@@ -1,11 +1,11 @@
-# orders.py (LENGKAP - hanya get_user_orders yang berubah)
+# orders.py (LENGKAP - DENGAN PERBAIKAN BUG begin_nested & DEAD CODE)
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 from typing import List
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from app.database import get_db
 from app.models import Order, OrderItem, Cart, Product, User, Payment, Voucher, VoucherUsage
 from app.schemas import OrderCreate, OrderResponse, OrderItemResponse, OrderWithPaymentResponse
@@ -15,6 +15,8 @@ from app.core.enums import OrderStatus
 from app.services.xendit_service import xendit_service
 
 router = APIRouter(tags=["orders"])
+
+# ==================== HELPER FUNCTIONS ====================
 
 async def get_user_orders(
     user_id: int,
@@ -68,6 +70,9 @@ async def get_user_orders(
         })
 
     return paginated_response(response_orders, page, limit, total)
+
+
+# ==================== ENDPOINTS ====================
 
 @router.post("/", response_model=OrderWithPaymentResponse, status_code=201)
 async def create_order(
@@ -174,21 +179,21 @@ async def create_order(
         else:  # fixed
             discount_amount = min(voucher.discount_value, total_price)
 
-    # Buat record order dengan status pending (belum commit, hanya flush nanti)
+    # Buat record order dengan status pending
     db_order = Order(
         user_id=current_user.id,
         total_price=total_price,
         status="pending",
         shipping_address=order_data.shipping_address if order_data else None
     )
-    # [FIX] Set field voucher jika ada
     if voucher:
         db_order.applied_voucher_id = voucher.id
         db_order.discount_amount = discount_amount
 
     db.add(db_order)
-    # [FIX] Gunakan flush() agar dapat ID order tanpa commit permanen
-    await db.flush()
+    # [FIX] Commit pertama: simpan order, items, dan hapus cart secara permanen
+    # Ini mencegah race condition dengan webhook setelah Xendit sukses
+    await db.flush()  # dapatkan ID order
 
     # Buat item order dari data yang sudah disiapkan
     for item_data in order_items_data:
@@ -204,8 +209,11 @@ async def create_order(
     for item in cart_items_to_process:
         await db.delete(item)
 
-    # --- Integrasi Xendit: buat invoice ---
-    # Hitung final amount setelah diskon (jika ada voucher yang sudah di-apply)
+    # Commit pertama: order dan items tersimpan, cart dihapus, stok berkurang
+    await db.commit()
+    await db.refresh(db_order)
+
+    # --- Integrasi Xendit: buat invoice setelah commit ---
     final_amount = total_price - discount_amount
     if final_amount < 0:
         final_amount = 0.0
@@ -220,14 +228,32 @@ async def create_order(
             description=f"Payment for order #{db_order.id}"
         )
     except HTTPException as e:
-        # [FIX] Jika gagal membuat invoice, rollback semua perubahan database
-        await db.rollback()
+        # [FIX] Jika Xendit gagal, batalkan order dan kembalikan stok
+        # Karena order sudah di-commit, kita lakukan operasi kompensasi langsung
+        # Kembalikan stok produk
+        for item_data in order_items_data:
+            product_result = await db.execute(
+                select(Product).where(Product.id == item_data["product_id"]).with_for_update()
+            )
+            product = product_result.scalar_one_or_none()
+            if product:
+                product.stock += item_data["quantity"]
+        # Ubah status order menjadi cancelled
+        db_order.status = "cancelled"
+        # Reset voucher jika ada
+        if voucher:
+            db_order.applied_voucher_id = None
+            db_order.discount_amount = 0.0
+            # Kurangi used_count voucher (karena belum terpakai)
+            if voucher.used_count > 0:
+                voucher.used_count -= 1
+        await db.commit()
         raise HTTPException(
             status_code=502,
             detail=f"Failed to create Xendit invoice: {e.detail}"
         )
 
-    # Buat record payment dengan data dari Xendit
+    # Buat record payment dengan data dari Xendit (commit kedua)
     db_payment = Payment(
         order_id=db_order.id,
         method="xendit",
@@ -238,10 +264,7 @@ async def create_order(
         invoice_url=invoice_data.get("invoice_url")
     )
     db.add(db_payment)
-
-    # [FIX] Satu commit final setelah semua operasi sukses (order, items, cart dihapus, payment)
     await db.commit()
-    await db.refresh(db_order)
 
     # Ambil kembali order dengan items untuk response
     result = await db.execute(
@@ -276,6 +299,7 @@ async def create_order(
         "invoice_url": db_payment.invoice_url
     }
 
+
 @router.get("/me", response_model=dict)
 async def get_my_orders(
     page: int = 1,
@@ -285,6 +309,7 @@ async def get_my_orders(
 ):
     # Ambil pesanan user yang sedang login
     return await get_user_orders(current_user.id, page, limit, db)
+
 
 @router.get("/{order_id}", response_model=OrderResponse)
 async def get_order_by_id(
@@ -327,6 +352,7 @@ async def get_order_by_id(
         "items": items_response
     }
 
+
 @router.get("/", response_model=dict)
 async def get_all_orders(
     page: int = 1,
@@ -334,14 +360,17 @@ async def get_all_orders(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
-    # Admin: hitung total semua pesanan
-    total_result = await db.execute(select(func.count()).select_from(Order))
+    # [FIX] Admin: hitung total pesanan yang belum di-soft-delete (konsistensi data)
+    total_result = await db.execute(
+        select(func.count()).select_from(Order).where(Order.is_deleted == False)
+    )
     total = total_result.scalar()
 
-    # Admin: ambil semua pesanan dengan item dan produk
+    # [FIX] Admin: ambil hanya pesanan yang belum di-soft-delete
     result = await db.execute(
         select(Order)
         .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.is_deleted == False)
         .offset((page - 1) * limit)
         .limit(limit)
         .order_by(Order.created_at.desc())
@@ -375,6 +404,7 @@ async def get_all_orders(
 
     return paginated_response(response_orders, page, limit, total)
 
+
 @router.patch("/{order_id}/status", response_model=OrderResponse)
 async def update_order_status(
     order_id: int,
@@ -388,13 +418,56 @@ async def update_order_status(
     except ValueError:
         raise HTTPException(400, f"Invalid status. Must be one of: {[s.value for s in OrderStatus]}")
 
-    # Cari order
-    result = await db.execute(select(Order).where(Order.id == order_id))
+    # [FIX] State machine: tentukan transisi yang diperbolehkan
+    ALLOWED_TRANSITIONS = {
+        "pending": ["paid", "cancelled"],
+        "paid": ["shipped", "cancelled"],
+        "shipped": ["delivered"],
+        "delivered": [],
+        "cancelled": []   # status terminal
+    }
+
+    # [FIX] Lock order row untuk mencegah race condition cancel bersamaan
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).with_for_update()
+    )
     order = result.scalar_one_or_none()
     if not order:
         raise HTTPException(404, "Order not found")
 
     old_status = order.status
+
+    # [FIX] Idempotent guard: jika order sudah cancelled, langsung return tanpa proses ulang
+    if status == "cancelled" and old_status == "cancelled":
+        await db.refresh(order, attribute_names=["items"])
+        items_response = []
+        for item in order.items:
+            items_response.append({
+                "id": item.id,
+                "order_id": item.order_id,
+                "product_id": item.product_id,
+                "product_name": item.product.product_name if item.product else "Unknown",
+                "quantity": item.quantity,
+                "price_at_purchase": item.price_at_purchase,
+                "subtotal": item.price_at_purchase * item.quantity,
+                "created_at": item.created_at
+            })
+        return {
+            "id": order.id,
+            "user_id": order.user_id,
+            "total_price": order.total_price,
+            "status": order.status,
+            "created_at": order.created_at,
+            "shipping_address": order.shipping_address,
+            "items": items_response
+        }
+
+    # [FIX] Validasi transisi status menggunakan state machine
+    if status not in ALLOWED_TRANSITIONS.get(old_status, []):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot transition from '{old_status}' to '{status}'"
+        )
 
     # Validasi payment sebelum mengubah status ke shipped/delivered
     if status in ["shipped", "delivered"]:
@@ -408,14 +481,7 @@ async def update_order_status(
                 detail="Cannot change status to shipped/delivered because payment is not confirmed"
             )
 
-    # Batasan: hanya pesanan pending yang bisa dibatalkan admin
-    if status == "cancelled" and old_status != "pending":
-        raise HTTPException(
-            status_code=400,
-            detail=f"Cannot cancel order with status '{old_status}'. Only pending orders can be cancelled."
-        )
-
-    # Jika cancel, kembalikan stok dan reset voucher
+    # Jika cancel, kembalikan stok dan reset voucher (hanya sekali)
     if status == "cancelled" and old_status != "cancelled":
         for item in order.items:
             product_result = await db.execute(
@@ -427,7 +493,9 @@ async def update_order_status(
 
         # Reset voucher applied dan kurangi used_count jika voucher sudah pernah dikonfirmasi
         if order.applied_voucher_id is not None:
-            voucher_result = await db.execute(select(Voucher).where(Voucher.id == order.applied_voucher_id))
+            voucher_result = await db.execute(
+                select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+            )
             voucher = voucher_result.scalar_one_or_none()
             if voucher and voucher.used_count > 0:
                 voucher.used_count -= 1
@@ -462,6 +530,7 @@ async def update_order_status(
         "items": items_response
     }
 
+
 # User Cancel Order
 @router.patch("/{order_id}/user-cancel", response_model=OrderResponse)
 async def user_cancel_order(
@@ -469,11 +538,12 @@ async def user_cancel_order(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cari order milik user
+    # [FIX] Lock order row untuk mencegah race condition cancel bersamaan
     result = await db.execute(
         select(Order)
         .options(selectinload(Order.items).selectinload(OrderItem.product))
         .where(Order.id == order_id)
+        .with_for_update()
     )
     order = result.scalar_one_or_none()
     if not order:
@@ -486,6 +556,7 @@ async def user_cancel_order(
     if order.status != "pending":
         raise HTTPException(status_code=400, detail="Only pending orders can be cancelled")
 
+    # [FIX] Hapus block idempotent guard yang tidak akan pernah dieksekusi
     # Kembalikan stok produk
     for item in order.items:
         product_result = await db.execute(
@@ -497,7 +568,9 @@ async def user_cancel_order(
 
     # Kurangi used_count voucher jika sudah dikonfirmasi
     if order.applied_voucher_id is not None:
-        voucher_result = await db.execute(select(Voucher).where(Voucher.id == order.applied_voucher_id))
+        voucher_result = await db.execute(
+            select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+        )
         voucher = voucher_result.scalar_one_or_none()
         if voucher and voucher.used_count > 0:
             voucher.used_count -= 1
@@ -531,3 +604,52 @@ async def user_cancel_order(
         "shipping_address": order.shipping_address,
         "items": items_response
     }
+
+
+# ==================== BACKGROUND TASK ====================
+
+async def auto_cancel_expired_orders(db: AsyncSession) -> int:
+    """
+    [FIX] Batalkan order pending yang sudah lebih dari 24 jam.
+    Fungsi ini seharusnya dipanggil oleh scheduler (misal APScheduler) setiap jam.
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+    # Ambil order pending yang kadaluwarsa, beserta items-nya
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items))
+        .where(
+            Order.status == "pending",
+            Order.created_at < cutoff,
+            Order.is_deleted == False
+        )
+    )
+    orders = result.scalars().all()
+    if not orders:
+        return 0
+
+    for order in orders:
+        # Kembalikan stok produk
+        for item in order.items:
+            product_result = await db.execute(
+                select(Product).where(Product.id == item.product_id).with_for_update()
+            )
+            product = product_result.scalar_one_or_none()
+            if product:
+                product.stock += item.quantity
+
+        # Reset voucher jika ada
+        if order.applied_voucher_id is not None:
+            voucher_result = await db.execute(
+                select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+            )
+            voucher = voucher_result.scalar_one_or_none()
+            if voucher and voucher.used_count > 0:
+                voucher.used_count -= 1
+            order.applied_voucher_id = None
+            order.discount_amount = 0.0
+
+        order.status = "cancelled"
+
+    await db.commit()
+    return len(orders)

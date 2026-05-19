@@ -1,6 +1,7 @@
 # xendit_service.py
-
 import httpx
+import hmac
+import hashlib
 from typing import Dict, Any
 from fastapi import HTTPException
 from app.core.config import settings
@@ -55,5 +56,18 @@ class XenditService:
         """Verify the webhook callback token from Xendit."""
         # Verifikasi token webhook untuk keamanan
         return callback_token == self.webhook_token
+
+    def verify_webhook_signature(self, payload_body: bytes, signature_header: str) -> bool:
+        """
+        Verify HMAC-SHA256 signature of webhook payload using Xendit secret key.
+        """
+        if not signature_header:
+            return False
+        expected_signature = hmac.new(
+            self.secret_key.encode('utf-8'),
+            payload_body,
+            hashlib.sha256
+        ).hexdigest()
+        return hmac.compare_digest(expected_signature, signature_header)
 
 xendit_service = XenditService()

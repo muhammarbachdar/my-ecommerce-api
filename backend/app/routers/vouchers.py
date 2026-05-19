@@ -1,4 +1,4 @@
-# vouchers.py (LENGKAP - hanya claim_voucher yang berubah)
+# vouchers.py (LENGKAP - DENGAN PERBAIKAN FINAL: NONAKTIFKAN ENDPOINT USANG)
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -180,13 +180,19 @@ async def claim_voucher(
     if used_by_user >= voucher.usage_per_user:
         raise HTTPException(status_code=400, detail="You have reached the usage limit for this voucher")
     
-    # Claim voucher (buat record UserVoucher)
+    # [FIX] Race condition masih mungkin terjadi karena tidak ada lock di UserVoucher.
+    # Solusi enterprise: tambahkan unique constraint (user_id, voucher_id) di database.
+    # Sementara ini tetap menggunakan insert biasa, namun dengan harapan constraint mencegah duplikat.
     db_user_voucher = UserVoucher(
         user_id=current_user.id,
         voucher_id=voucher_id
     )
     db.add(db_user_voucher)
-    await db.commit()
+    try:
+        await db.commit()
+    except Exception:  # IntegrityError jika constraint dilanggar
+        await db.rollback()
+        raise HTTPException(status_code=400, detail="You already claimed this voucher")
     await db.refresh(db_user_voucher)
     
     return {
@@ -235,144 +241,29 @@ async def get_my_vouchers(
     
     return response
 
-# Apply voucher to order
-@router.post("/apply")
+# ==================== ENDPOINT DINONAKTIFKAN (DEAD CODE / BACKDOOR) ====================
+# [FIX] Nonaktifkan endpoint /apply karena logika voucher sudah diintegrasikan ke create_order (orders.py)
+@router.post("/apply", include_in_schema=False)
 async def apply_voucher(
     apply_data: ApplyVoucher,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # 1. Cek order (milik user, status pending)
-    order_result = await db.execute(
-        select(Order).where(
-            Order.id == apply_data.order_id,
-            Order.user_id == current_user.id,
-            Order.status == "pending"
-        )
+    # Endpoint ini sudah tidak digunakan lagi. Logika voucher sekarang di dalam create_order.
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail="This endpoint is deprecated. Voucher application is now integrated into the order creation process."
     )
-    order = order_result.scalar_one_or_none()
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found or already paid")
-    
-    # 2. Cek apakah sudah pernah apply voucher
-    if order.applied_voucher_id is not None:
-        raise HTTPException(status_code=400, detail="Voucher already applied to this order")
-    
-    # 3. Cek voucher (aktif, belum kadaluarsa, masih ada kuota)
-    now = datetime.now(timezone.utc)
-    voucher_result = await db.execute(
-        select(Voucher).where(
-            Voucher.code == apply_data.code.upper(),
-            Voucher.is_active == True,
-            Voucher.start_date <= now,
-            Voucher.end_date >= now,
-            Voucher.used_count < Voucher.usage_limit
-        )
-    )
-    voucher = voucher_result.scalar_one_or_none()
-    if not voucher:
-        raise HTTPException(status_code=400, detail="Invalid or expired voucher code")
-    
-    # 4. Cek min purchase (gunakan total_price asli, belum termasuk diskon)
-    if order.total_price < voucher.min_purchase:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Minimum purchase Rp{int(voucher.min_purchase):,} required"
-        )
-    
-    # 5. Cek usage per user (sudah berapa kali voucher ini dipakai user)
-    user_usage = await db.execute(
-        select(func.count()).select_from(VoucherUsage).where(
-            VoucherUsage.user_id == current_user.id,
-            VoucherUsage.voucher_id == voucher.id
-        )
-    )
-    used_by_user = user_usage.scalar() or 0
-    if used_by_user >= voucher.usage_per_user:
-        raise HTTPException(status_code=400, detail="Voucher usage limit reached for this user")
-    
-    # 6. Hitung diskon
-    if voucher.discount_type == "percentage":
-        discount = order.total_price * voucher.discount_value / 100
-        if voucher.max_discount and discount > voucher.max_discount:
-            discount = voucher.max_discount
-    else:
-        discount = min(voucher.discount_value, order.total_price)
-    
-    # 7. Simpan voucher ke order (tanpa mengubah total_price)
-    order.applied_voucher_id = voucher.id
-    order.discount_amount = discount
-    await db.commit()
-    
-    # 8. Return hasil (final price tetap menggunakan diskon yang sudah dihitung)
-    final_price = order.total_price - discount
-    return {
-        "original_total": order.total_price,
-        "discount": discount,
-        "final_total": final_price,
-        "voucher_code": voucher.code,
-        "voucher_name": voucher.name
-    }
 
-# Confirm voucher usage (after payment)
-@router.post("/confirm")
+# [FIX] Nonaktifkan endpoint /confirm karena logika voucher sudah diintegrasikan ke xendit_webhook (payments.py)
+@router.post("/confirm", include_in_schema=False)
 async def confirm_voucher(
     apply_data: ApplyVoucher,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cek order (milik user, status paid)
-    order_result = await db.execute(
-        select(Order).where(
-            Order.id == apply_data.order_id,
-            Order.user_id == current_user.id,
-            Order.status == "paid"
-        )
+    # Endpoint ini sudah tidak digunakan lagi. Logika voucher sekarang di dalam xendit_webhook.
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail="This endpoint is deprecated. Voucher confirmation is now integrated into payment webhook."
     )
-    order = order_result.scalar_one_or_none()
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found or not paid")
-    
-    # Cek apakah sudah ada voucher applied
-    if order.applied_voucher_id is None:
-        raise HTTPException(status_code=400, detail="No voucher applied to this order")
-    
-    # Ambil voucher
-    voucher_result = await db.execute(
-        select(Voucher).where(Voucher.id == order.applied_voucher_id)
-    )
-    voucher = voucher_result.scalar_one_or_none()
-    if not voucher:
-        raise HTTPException(status_code=400, detail="Voucher not found")
-    
-    # Update voucher used_count
-    voucher.used_count += 1
-    
-    # Buat VoucherUsage record
-    db_usage = VoucherUsage(
-        voucher_id=voucher.id,
-        user_id=current_user.id,
-        order_id=order.id,
-        discount_amount=order.discount_amount
-    )
-    db.add(db_usage)
-    
-    # Update order total_price menjadi final (original - discount)
-    order.total_price = order.total_price - order.discount_amount
-    
-    # Update user_voucher jika ada
-    user_voucher_result = await db.execute(
-        select(UserVoucher).where(
-            UserVoucher.user_id == current_user.id,
-            UserVoucher.voucher_id == voucher.id,
-            UserVoucher.is_used == False
-        )
-    )
-    user_voucher = user_voucher_result.scalar_one_or_none()
-    if user_voucher:
-        user_voucher.is_used = True
-        user_voucher.used_at = datetime.now(timezone.utc)
-    
-    await db.commit()
-    
-    return {"message": "Voucher applied successfully"}

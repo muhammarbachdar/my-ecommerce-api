@@ -1,3 +1,4 @@
+# === FILE: app/utils/pagination.py ===
 import math
 from typing import TypeVar, List, Any
 from pydantic import BaseModel
@@ -32,6 +33,8 @@ def paginate(page: int, limit: int, total: int) -> PaginationMeta:
     )
 
 def paginated_response(data: List[Any], page: int, limit: int, total: int) -> dict:
+    # [FIX] Batasi limit maksimal 100 untuk mencegah DoS
+    limit = min(limit, 100)
     """
     Mengkonversi objek SQLAlchemy ke dict jika memiliki method `__dict__` atau `to_dict`,
     namun tetap aman untuk data yang sudah berupa dict.

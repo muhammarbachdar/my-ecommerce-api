@@ -1,8 +1,7 @@
 # auth.py
-
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from datetime import datetime, timedelta, timezone
 import uuid
 from app.database import get_db
@@ -126,6 +125,17 @@ async def logout(
     stored_token = result.scalar_one_or_none()
     if stored_token:
         stored_token.revoked_at = datetime.now(timezone.utc)
+        
+        # Hapus token expired/revoked lama milik user ini (cleanup)
+        await db.execute(
+            RefreshToken.__table__.delete().where(
+                RefreshToken.user_id == current_user.id,
+                or_(
+                    RefreshToken.expires_at < datetime.now(timezone.utc),
+                    RefreshToken.revoked_at != None
+                )
+            )
+        )
         await db.commit()
 
     return None

@@ -1,7 +1,7 @@
-# payments.py (LENGKAP - hanya xendit_webhook yang berubah)
-
+# payments.py
 import uuid
 import json
+from decimal import Decimal
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -174,24 +174,35 @@ async def xendit_webhook(
 ):
     """
     Endpoint webhook untuk menerima notifikasi dari Xendit setelah pembayaran.
-    - Verifikasi token x-callback-token.
+    - Verifikasi signature HMAC (prioritas) atau x-callback-token (fallback).
     - Hanya memproses event INVOICE.PAID.
     - Idempotent: jika payment sudah paid, langsung return.
     - Update status order dan payment, serta tandai voucher terpakai.
     - Stok produk tidak dikurangi karena sudah dilakukan saat checkout.
     """
-    # 1. Verifikasi token
+    # 1. Ambil raw body untuk signature verification
+    body = await request.body()
+    
+    # 2. Verifikasi signature HMAC jika ada (prioritas tinggi)
+    signature_header = request.headers.get("xendit-webhook-signature")
+    valid_signature = False
+    if signature_header:
+        valid_signature = xendit_service.verify_webhook_signature(body, signature_header)
+    
+    # 3. Fallback: verifikasi token jika signature tidak ada atau tidak valid
     callback_token = request.headers.get("x-callback-token")
-    if not callback_token or not xendit_service.verify_webhook_token(callback_token):
-        raise HTTPException(status_code=401, detail="Invalid callback token")
+    valid_token = callback_token and xendit_service.verify_webhook_token(callback_token)
+    
+    if not valid_signature and not valid_token:
+        raise HTTPException(status_code=401, detail="Invalid webhook authentication")
 
-    # 2. Baca payload
+    # 4. Baca payload
     try:
         payload = await request.json()
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON payload")
 
-    # 3. Ekstrak data — Xendit kirim di root payload, bukan di dalam "data"
+    # 5. Ekstrak data — Xendit kirim di root payload, bukan di dalam "data"
     invoice_id = payload.get("id")
     external_id = payload.get("external_id")
     status_xendit = payload.get("status")
@@ -202,7 +213,7 @@ async def xendit_webhook(
     if not invoice_id or not external_id:
         raise HTTPException(status_code=400, detail="Missing invoice_id or external_id")
 
-    # 4. Idempotency: cari payment berdasarkan xendit_invoice_id
+    # 6. Idempotency: cari payment berdasarkan xendit_invoice_id
     payment_result = await db.execute(
         select(Payment).where(Payment.xendit_invoice_id == invoice_id).with_for_update()
     )
@@ -215,14 +226,18 @@ async def xendit_webhook(
         # Sudah diproses sebelumnya
         return {"status": "already_paid"}
 
-    # [FIX] Validasi nominal pembayaran dari webhook
+    # [FIX] Validasi nominal pembayaran dari webhook menggunakan Decimal dengan toleransi
     webhook_amount = payload.get("amount")
-    if webhook_amount is not None and float(webhook_amount) != float(payment.amount):
-        # Log warning (cukup print) dan tolak webhook
-        print(f"[WARNING] Xendit webhook amount mismatch: invoice {invoice_id}, expected {payment.amount}, got {webhook_amount}")
-        return {"status": "amount_mismatch", "reason": f"Expected {payment.amount}, got {webhook_amount}"}
+    if webhook_amount is not None:
+        # Konversi ke Decimal untuk perbandingan yang akurat
+        webhook_decimal = Decimal(str(webhook_amount))
+        payment_decimal = Decimal(str(payment.amount))
+        # Toleransi maksimal 1 sen (0.01)
+        if abs(webhook_decimal - payment_decimal) > Decimal("0.01"):
+            print(f"[WARNING] Xendit webhook amount mismatch: invoice {invoice_id}, expected {payment.amount}, got {webhook_amount}")
+            return {"status": "amount_mismatch", "reason": f"Expected {payment.amount}, got {webhook_amount}"}
 
-    # 5. Dapatkan order terkait
+    # 7. Dapatkan order terkait
     order_result = await db.execute(
         select(Order).where(Order.id == payment.order_id).with_for_update()
     )
@@ -230,14 +245,14 @@ async def xendit_webhook(
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
 
-    if order.status == "paid":
-        # Order sudah paid (mungkin duplikat webhook)
-        payment.status = "paid"
-        payment.paid_at = datetime.now(timezone.utc)
-        await db.commit()
-        return {"status": "already_paid"}
+    # [FIX] Tolak webhook jika status order sudah tidak pending (Cancelled/Paid/dll)
+    if order.status != "pending":
+        print(f"[WARNING] Webhook untuk order {order.id} diabaikan karena status saat ini: {order.status}")
+        return {"status": "ignored", "reason": f"Order status is {order.status}"}
 
-    # 6. Proses voucher jika ada
+    # [FIX] Hapus dead code `if order.status == "paid"` karena sudah ditangani di atas
+
+    # 8. Proses voucher jika ada
     if order.applied_voucher_id is not None:
         voucher_result = await db.execute(
             select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
@@ -274,7 +289,7 @@ async def xendit_webhook(
                 user_voucher.is_used = True
                 user_voucher.used_at = datetime.now(timezone.utc)
 
-    # 8. Ubah status
+    # 9. Ubah status
     order.status = "paid"
     payment.status = "paid"
     payment.paid_at = datetime.now(timezone.utc)
