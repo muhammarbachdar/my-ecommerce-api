@@ -1,3 +1,5 @@
+# users.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -22,6 +24,7 @@ async def update_current_user(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Update profil user yang sedang login
     if user_update.name is not None:
         current_user.name = user_update.name
     if user_update.phone is not None:
@@ -38,6 +41,7 @@ async def get_current_user_orders(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Ambil riwayat pesanan user yang sedang login (delegasi ke orders router)
     from app.routers.orders import get_user_orders
     return await get_user_orders(current_user.id, page, limit, db)
 
@@ -48,9 +52,11 @@ async def get_all_users(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin: hitung total user
     total_result = await db.execute(select(func.count()).select_from(User))
     total = total_result.scalar()
     
+    # Admin: ambil daftar semua user
     result = await db.execute(
         select(User)
         .offset((page - 1) * limit)
@@ -67,6 +73,7 @@ async def get_user_by_id(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin: ambil detail user berdasarkan ID
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
@@ -79,9 +86,11 @@ async def ban_user(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin tidak bisa ban diri sendiri
     if user_id == admin.id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You cannot ban yourself")
     
+    # Ban/unban user (soft delete toggle)
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:

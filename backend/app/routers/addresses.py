@@ -1,3 +1,5 @@
+# addresses.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -18,6 +20,7 @@ async def get_my_addresses(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Hitung total alamat milik user yang belum dihapus
     total_result = await db.execute(
         select(func.count()).select_from(Address).where(
             Address.user_id == current_user.id,
@@ -26,6 +29,7 @@ async def get_my_addresses(
     )
     total = total_result.scalar()
 
+    # Ambil daftar alamat user dengan urutan default terlebih dahulu
     result = await db.execute(
         select(Address)
         .where(
@@ -45,6 +49,7 @@ async def get_address(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cari alamat milik user yang belum dihapus
     result = await db.execute(
         select(Address).where(
             Address.id == address_id,
@@ -63,6 +68,7 @@ async def create_address(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Jika alamat baru dijadikan default, reset default alamat lain user
     if address_data.is_default:
         result = await db.execute(
             select(Address).where(
@@ -74,6 +80,7 @@ async def create_address(
         for addr in existing_addresses:
             addr.is_default = False
 
+    # Buat alamat baru
     db_address = Address(
         user_id=current_user.id,
         label=address_data.label,
@@ -97,6 +104,7 @@ async def update_address(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cari alamat yang akan diupdate
     result = await db.execute(
         select(Address).where(
             Address.id == address_id,
@@ -110,6 +118,7 @@ async def update_address(
 
     update_data = address_update.model_dump(exclude_unset=True)
 
+    # Jika mengubah menjadi default, reset default alamat lain user
     if update_data.get("is_default") and not address.is_default:
         result = await db.execute(
             select(Address).where(
@@ -121,6 +130,7 @@ async def update_address(
         for addr in existing_addresses:
             addr.is_default = False
 
+    # Terapkan perubahan pada alamat
     for key, value in update_data.items():
         setattr(address, key, value)
 
@@ -134,6 +144,7 @@ async def delete_address(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cari alamat yang akan dihapus (soft delete)
     result = await db.execute(
         select(Address).where(
             Address.id == address_id,
@@ -145,6 +156,7 @@ async def delete_address(
     if not address:
         raise HTTPException(status_code=404, detail=f"Address with id {address_id} not found")
 
+    # Hitung jumlah alamat user yang masih aktif
     count_result = await db.execute(
         select(func.count()).select_from(Address).where(
             Address.user_id == current_user.id,
@@ -153,10 +165,12 @@ async def delete_address(
     )
     count = count_result.scalar()
 
+    # Soft delete alamat
     address.is_deleted = True
     address.deleted_at = datetime.now(timezone.utc)
     await db.commit()
 
+    # Jika alamat yang dihapus adalah default dan masih ada alamat lain, jadikan alamat pertama sebagai default
     if address.is_default and count > 1:
         first_address_result = await db.execute(
             select(Address).where(
@@ -179,6 +193,7 @@ async def get_addresses_by_user(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
+    # Admin: hitung total alamat user yang belum dihapus
     total_result = await db.execute(
         select(func.count()).select_from(Address).where(
             Address.user_id == user_id,
@@ -187,6 +202,7 @@ async def get_addresses_by_user(
     )
     total = total_result.scalar()
 
+    # Admin: ambil daftar alamat user dengan urutan default terlebih dahulu
     result = await db.execute(
         select(Address)
         .where(

@@ -1,3 +1,5 @@
+# auth.py
+
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -16,6 +18,7 @@ router = APIRouter(tags=["auth"])
 @router.post("/register", response_model=UserResponse, status_code=201)
 @limiter.limit("5/hour")
 async def register(request: Request, data: UserRegister, db: AsyncSession = Depends(get_db)):
+    # Registrasi user baru, cek email sudah terdaftar atau belum
     user = await register_user(db, data.email, data.password)
     if not user:
         raise HTTPException(
@@ -27,6 +30,7 @@ async def register(request: Request, data: UserRegister, db: AsyncSession = Depe
 @router.post("/login", response_model=Token)
 @limiter.limit("5/15minutes")
 async def login(request: Request, data: UserLogin, db: AsyncSession = Depends(get_db)):
+    # Autentikasi user berdasarkan email dan password
     user = await authenticate_user(db, data.email, data.password)
     if not user:
         raise HTTPException(
@@ -34,9 +38,11 @@ async def login(request: Request, data: UserLogin, db: AsyncSession = Depends(ge
             detail="Invalid credentials"
         )
 
+    # Buat access token dan refresh token
     access_token = create_access_token({"sub": str(user.id)})
     refresh_token = create_refresh_token({"sub": str(user.id), "jti": str(uuid.uuid4())})
 
+    # Simpan refresh token ke database
     db_refresh = RefreshToken(
         user_id=user.id,
         token=refresh_token,
@@ -54,6 +60,7 @@ async def refresh_token(
     refresh_token: str,
     db: AsyncSession = Depends(get_db)
 ):
+    # Cari refresh token yang masih berlaku di database
     result = await db.execute(
         select(RefreshToken).where(
             RefreshToken.token == refresh_token,
@@ -64,6 +71,7 @@ async def refresh_token(
     if not stored_token:
         raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
 
+    # Jika token sudah dicabut, cabut semua token user (deteksi reuse)
     if stored_token.revoked_at is not None:
         await db.execute(
             RefreshToken.__table__.update().where(
@@ -74,11 +82,13 @@ async def refresh_token(
         await db.commit()
         raise HTTPException(status_code=401, detail="Token reuse detected. All sessions revoked.")
 
+    # Pastikan user masih aktif
     user_result = await db.execute(select(User).where(User.id == stored_token.user_id))
     user = user_result.scalar_one_or_none()
     if not user or user.is_deleted:
         raise HTTPException(status_code=401, detail="User not found or banned")
 
+    # Cabut token lama dan buat token baru (rotasi)
     stored_token.revoked_at = datetime.now(timezone.utc)
 
     new_refresh_token_str = create_refresh_token({"sub": str(user.id), "jti": str(uuid.uuid4())})
@@ -105,6 +115,7 @@ async def logout(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cabut refresh token saat logout
     result = await db.execute(
         select(RefreshToken).where(
             RefreshToken.token == refresh_token,

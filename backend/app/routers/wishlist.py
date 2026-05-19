@@ -1,3 +1,5 @@
+# wishlist.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, delete
@@ -18,6 +20,7 @@ async def get_wishlist(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Hitung total item wishlist user yang belum dihapus
     total_result = await db.execute(
         select(func.count()).select_from(Wishlist).where(
             Wishlist.user_id == current_user.id,
@@ -26,6 +29,7 @@ async def get_wishlist(
     )
     total = total_result.scalar()
 
+    # Ambil item wishlist user
     result = await db.execute(
         select(Wishlist).where(
             Wishlist.user_id == current_user.id,
@@ -36,6 +40,7 @@ async def get_wishlist(
     )
     wishlist_items = result.scalars().all()
 
+    # Bangun response dengan detail produk (filter produk yang sudah dihapus)
     response_items = []
     for item in wishlist_items:
         product_result = await db.execute(
@@ -64,6 +69,7 @@ async def add_to_wishlist(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cek apakah produk ada dan belum dihapus
     product_result = await db.execute(
         select(Product).where(
             Product.id == wishlist_item.product_id,
@@ -74,6 +80,7 @@ async def add_to_wishlist(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
+    # Cek apakah produk sudah ada di wishlist user
     existing_result = await db.execute(
         select(Wishlist).where(
             Wishlist.user_id == current_user.id,
@@ -85,6 +92,7 @@ async def add_to_wishlist(
     if existing:
         raise HTTPException(status_code=400, detail="Product already in wishlist")
 
+    # Tambahkan ke wishlist
     db_wishlist = Wishlist(
         user_id=current_user.id,
         product_id=wishlist_item.product_id
@@ -109,6 +117,7 @@ async def remove_from_wishlist(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Soft delete item wishlist berdasarkan product_id
     result = await db.execute(
         select(Wishlist).where(
             Wishlist.user_id == current_user.id,

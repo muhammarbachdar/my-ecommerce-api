@@ -1,3 +1,5 @@
+# products.py
+
 from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, or_   # FIX: tambah func
@@ -19,7 +21,7 @@ async def create_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    # FIX: validasi category_id jika diberikan
+    # Validasi kategori jika diberikan
     if product.category_id is not None:
         cat_result = await db.execute(
             select(Category).where(
@@ -30,6 +32,7 @@ async def create_product(
         if not cat_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Category not found or deleted")
 
+    # Buat produk baru
     db_product = Product(
         product_name=product.product_name,
         price=product.price,
@@ -54,6 +57,7 @@ async def get_all_products(
     max_price: Optional[float] = None,
     db: AsyncSession = Depends(get_db)
 ):
+    # Bangun query total produk dengan filter
     total_query = select(func.count()).select_from(Product).where(Product.is_deleted == False)
     if q:
         total_query = total_query.where(Product.product_name.ilike(f"%{q}%"))
@@ -67,6 +71,7 @@ async def get_all_products(
     total_result = await db.execute(total_query)
     total = total_result.scalar() or 0
 
+    # Bangun query produk dengan filter yang sama
     query = select(Product).where(Product.is_deleted == False)
     if q:
         query = query.where(Product.product_name.ilike(f"%{q}%"))
@@ -92,6 +97,7 @@ async def get_product(
     product_id: int,
     db: AsyncSession = Depends(get_db)
 ):
+    # Ambil detail produk berdasarkan ID
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -114,6 +120,7 @@ async def update_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
+    # Cari produk yang akan diupdate
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -127,7 +134,7 @@ async def update_product(
             detail=f"Product with id {product_id} not found"
         )
 
-    # FIX: validasi category_id jika diberikan
+    # Validasi kategori jika diubah
     if product_update.category_id is not None:
         cat_result = await db.execute(
             select(Category).where(
@@ -138,6 +145,7 @@ async def update_product(
         if not cat_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Category not found or deleted")
 
+    # Update data produk
     product.product_name = product_update.product_name
     product.price = product_update.price
     product.stock = product_update.stock
@@ -156,6 +164,7 @@ async def delete_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
+    # Soft delete produk
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -179,5 +188,6 @@ async def upload_product_image(
     file: UploadFile = File(...),
     current_user: User = Depends(require_admin)
 ):
+    # Upload gambar produk ke penyimpanan
     url = await upload_image(file)
     return {"image_url": url}

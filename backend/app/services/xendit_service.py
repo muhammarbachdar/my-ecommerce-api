@@ -1,3 +1,5 @@
+# xendit_service.py
+
 import httpx
 from typing import Dict, Any
 from fastapi import HTTPException
@@ -18,6 +20,7 @@ class XenditService:
         headers = {
             "Content-Type": "application/json"
         }
+        # Autentikasi Basic Auth dengan secret key
         auth = (self.secret_key, "")  # Basic Auth dengan username = secret key, password kosong
         payload = {
             "external_id": external_id,
@@ -30,16 +33,19 @@ class XenditService:
 
         async with httpx.AsyncClient(timeout=30.0) as client:
             try:
+                # Kirim request ke Xendit API
                 response = await client.post(url, json=payload, headers=headers, auth=auth)
                 response.raise_for_status()
                 return response.json()
             except httpx.HTTPStatusError as e:
+                # Tangani error dari Xendit (misal 4xx/5xx)
                 error_detail = e.response.text if e.response else str(e)
                 raise HTTPException(
                     status_code=502,
                     detail=f"Xendit API error: {error_detail}"
                 )
             except httpx.RequestError as e:
+                # Tangani error koneksi ke Xendit
                 raise HTTPException(
                     status_code=502,
                     detail=f"Failed to connect to Xendit: {str(e)}"
@@ -47,6 +53,7 @@ class XenditService:
 
     def verify_webhook_token(self, callback_token: str) -> bool:
         """Verify the webhook callback token from Xendit."""
+        # Verifikasi token webhook untuk keamanan
         return callback_token == self.webhook_token
 
 xendit_service = XenditService()

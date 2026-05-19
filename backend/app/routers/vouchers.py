@@ -1,3 +1,5 @@
+# vouchers.py (LENGKAP - hanya claim_voucher yang berubah)
+
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
@@ -21,6 +23,7 @@ async def create_voucher(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Cek apakah kode voucher sudah ada
     result = await db.execute(
         select(Voucher).where(Voucher.code == voucher_data.code.upper())
     )
@@ -28,6 +31,7 @@ async def create_voucher(
     if existing:
         raise HTTPException(status_code=400, detail="Voucher code already exists")
     
+    # Buat voucher baru
     db_voucher = Voucher(
         code=voucher_data.code.upper(),
         name=voucher_data.name,
@@ -53,6 +57,7 @@ async def get_all_vouchers(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin: ambil semua voucher
     result = await db.execute(
         select(Voucher).offset(skip).limit(limit).order_by(Voucher.id.desc())
     )
@@ -66,6 +71,7 @@ async def update_voucher(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin: update voucher
     result = await db.execute(select(Voucher).where(Voucher.id == voucher_id))
     voucher = result.scalar_one_or_none()
     if not voucher:
@@ -85,6 +91,7 @@ async def delete_voucher(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin: hapus voucher permanen
     result = await db.execute(select(Voucher).where(Voucher.id == voucher_id))
     voucher = result.scalar_one_or_none()
     if not voucher:
@@ -101,6 +108,7 @@ async def get_available_vouchers(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cari voucher yang aktif secara global (belum kadaluarsa, masih ada kuota)
     now = datetime.now(timezone.utc)
     result = await db.execute(
         select(Voucher).where(
@@ -112,6 +120,7 @@ async def get_available_vouchers(
     )
     vouchers = result.scalars().all()
     
+    # Filter voucher yang belum melebihi batas penggunaan per user
     available = []
     for voucher in vouchers:
         user_usage = await db.execute(
@@ -133,7 +142,9 @@ async def claim_voucher(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cek ketersediaan voucher (aktif, belum kadaluarsa, masih ada kuota)
     now = datetime.now(timezone.utc)
+    # [FIX] Tambah .with_for_update() untuk mencegah race condition overclaim
     result = await db.execute(
         select(Voucher).where(
             Voucher.id == voucher_id,
@@ -141,12 +152,13 @@ async def claim_voucher(
             Voucher.start_date <= now,
             Voucher.end_date >= now,
             Voucher.used_count < Voucher.usage_limit
-        )
+        ).with_for_update()
     )
     voucher = result.scalar_one_or_none()
     if not voucher:
         raise HTTPException(status_code=404, detail="Voucher not available")
     
+    # Pastikan user belum pernah claim voucher ini
     existing = await db.execute(
         select(UserVoucher).where(
             UserVoucher.user_id == current_user.id,
@@ -156,6 +168,7 @@ async def claim_voucher(
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="You already claimed this voucher")
     
+    # Pastikan user belum melebihi batas penggunaan per user
     user_usage = await db.execute(
         select(func.count()).select_from(UserVoucher).where(
             UserVoucher.user_id == current_user.id,
@@ -167,6 +180,7 @@ async def claim_voucher(
     if used_by_user >= voucher.usage_per_user:
         raise HTTPException(status_code=400, detail="You have reached the usage limit for this voucher")
     
+    # Claim voucher (buat record UserVoucher)
     db_user_voucher = UserVoucher(
         user_id=current_user.id,
         voucher_id=voucher_id
@@ -194,6 +208,7 @@ async def get_my_vouchers(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Ambil semua voucher yang sudah di-claim oleh user
     result = await db.execute(
         select(UserVoucher).where(UserVoucher.user_id == current_user.id)
     )
@@ -227,7 +242,7 @@ async def apply_voucher(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # 1. Cek order
+    # 1. Cek order (milik user, status pending)
     order_result = await db.execute(
         select(Order).where(
             Order.id == apply_data.order_id,
@@ -243,7 +258,7 @@ async def apply_voucher(
     if order.applied_voucher_id is not None:
         raise HTTPException(status_code=400, detail="Voucher already applied to this order")
     
-    # 3. Cek voucher (sama seperti sebelumnya)
+    # 3. Cek voucher (aktif, belum kadaluarsa, masih ada kuota)
     now = datetime.now(timezone.utc)
     voucher_result = await db.execute(
         select(Voucher).where(
@@ -265,7 +280,7 @@ async def apply_voucher(
             detail=f"Minimum purchase Rp{int(voucher.min_purchase):,} required"
         )
     
-    # 5. Cek usage per user (sama)
+    # 5. Cek usage per user (sudah berapa kali voucher ini dipakai user)
     user_usage = await db.execute(
         select(func.count()).select_from(VoucherUsage).where(
             VoucherUsage.user_id == current_user.id,
@@ -306,7 +321,7 @@ async def confirm_voucher(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cek order
+    # Cek order (milik user, status paid)
     order_result = await db.execute(
         select(Order).where(
             Order.id == apply_data.order_id,

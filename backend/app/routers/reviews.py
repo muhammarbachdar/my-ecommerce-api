@@ -1,3 +1,5 @@
+# reviews.py
+
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_, update
@@ -12,12 +14,14 @@ router = APIRouter(tags=["reviews"])
 
 async def update_product_rating(db: AsyncSession, product_id: int):
     """Hitung ulang average_rating dan total_reviews untuk suatu produk"""
+    # Hitung rata-rata rating dan total review produk
     result = await db.execute(
         select(func.avg(Review.rating), func.count(Review.id))
         .where(Review.product_id == product_id, Review.is_deleted == False)
     )
     avg_rating, total_reviews = result.first()
     
+    # Update field rating di tabel produk
     await db.execute(
         update(Product)
         .where(Product.id == product_id)
@@ -47,7 +51,7 @@ async def get_product_reviews(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Ambil reviews
+    # Ambil reviews produk
     result = await db.execute(
         select(Review)
         .where(Review.product_id == product_id, Review.is_deleted == False)
@@ -83,6 +87,7 @@ async def get_product_average_rating(
     product_id: int,
     db: AsyncSession = Depends(get_db)
 ):
+    # Hitung rata-rata rating langsung dari review
     result = await db.execute(
         select(func.avg(Review.rating), func.count(Review.id))
         .where(Review.product_id == product_id, Review.is_deleted == False)
@@ -102,12 +107,12 @@ async def create_review(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cek apakah user pernah membeli produk ini
+    # Cek apakah user pernah membeli produk ini (hanya order yang sudah dibayar)
     order_result = await db.execute(
         select(OrderItem).join(Order).where(
             Order.user_id == current_user.id,
             OrderItem.product_id == review_data.product_id,
-            Order.status == "paid"  # hanya order yang sudah dibayar
+            Order.status == "paid"
         )
     )
     has_purchased = order_result.scalar_one_or_none()
@@ -132,6 +137,7 @@ async def create_review(
             detail="You have already reviewed this product"
         )
     
+    # Buat review baru
     db_review = Review(
         user_id=current_user.id,
         product_id=review_data.product_id,
@@ -162,6 +168,7 @@ async def update_review(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Cari review milik user
     result = await db.execute(
         select(Review).where(
             Review.id == review_id,
@@ -173,6 +180,7 @@ async def update_review(
     if not review:
         raise HTTPException(status_code=404, detail="Review not found")
     
+    # Update rating/komentar
     if review_update.rating is not None:
         review.rating = review_update.rating
     if review_update.comment is not None:
@@ -206,6 +214,7 @@ async def delete_review(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    # Soft delete review milik user
     result = await db.execute(
         select(Review).where(
             Review.id == review_id,
@@ -231,6 +240,7 @@ async def admin_delete_review(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
+    # Admin: soft delete review siapa pun
     result = await db.execute(
         select(Review).where(
             Review.id == review_id,

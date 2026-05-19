@@ -1,3 +1,5 @@
+# schemas.py
+
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import Optional, List
 from datetime import datetime
@@ -11,6 +13,7 @@ class UserRegister(BaseModel):
     @field_validator("password")
     @classmethod
     def password_length(cls, v):
+        # Validasi panjang password (min 8, max 72 karena bcrypt)
         if len(v) > 72:
             raise ValueError("Password cannot exceed 72 characters")
         if len(v) < 8:
@@ -55,6 +58,7 @@ class ProductBase(BaseModel):
     @field_validator("price")
     @classmethod
     def price_positive(cls, v):
+        # Harga harus lebih dari 0
         if v <= 0:
             raise ValueError("Price must be greater than 0")
         return v
@@ -62,6 +66,7 @@ class ProductBase(BaseModel):
     @field_validator("stock")
     @classmethod
     def stock_non_negative(cls, v):
+        # Stok tidak boleh negatif
         if v < 0:
             raise ValueError("Stock cannot be negative")
         return v

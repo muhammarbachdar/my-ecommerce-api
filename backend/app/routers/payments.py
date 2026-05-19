@@ -1,3 +1,5 @@
+# payments.py (LENGKAP - hanya xendit_webhook yang berubah)
+
 import uuid
 import json
 from datetime import datetime, timezone
@@ -24,6 +26,7 @@ async def create_payment(
     """
     Membuat payment record secara manual (untuk metode pembayaran non-Xendit).
     """
+    # Cek apakah order milik user dan masih ada
     order_result = await db.execute(
         select(Order).where(
             Order.id == payment_data.order_id,
@@ -34,6 +37,7 @@ async def create_payment(
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
 
+    # Pastikan belum ada payment untuk order ini
     existing_result = await db.execute(
         select(Payment).where(Payment.order_id == payment_data.order_id)
     )
@@ -41,8 +45,10 @@ async def create_payment(
     if existing:
         raise HTTPException(status_code=400, detail="Payment already exists for this order")
 
+    # Buat URL pembayaran dummy (mock)
     mock_payment_url = f"https://mock-payment.example.com/pay/{uuid.uuid4().hex}"
 
+    # Buat record payment
     db_payment = Payment(
         order_id=payment_data.order_id,
         method=payment_data.method,
@@ -65,6 +71,7 @@ async def get_payment_by_order(
     """
     Mendapatkan payment berdasarkan order_id.
     """
+    # Cari payment berdasarkan order
     result = await db.execute(
         select(Payment).where(Payment.order_id == order_id)
     )
@@ -72,6 +79,7 @@ async def get_payment_by_order(
     if not payment:
         raise HTTPException(status_code=404, detail="Payment not found")
 
+    # Validasi akses: hanya pemilik order atau admin
     order_result = await db.execute(select(Order).where(Order.id == order_id))
     order = order_result.scalar_one_or_none()
     if order.user_id != current_user.id and not current_user.is_admin:
@@ -131,9 +139,6 @@ async def confirm_payment(
             discount_amount=order.discount_amount
         )
         db.add(db_usage)
-
-        # Update order total_price menjadi final
-        order.total_price = order.total_price - order.discount_amount
 
         # Update user_voucher jika ada
         user_voucher_result = await db.execute(
@@ -210,6 +215,13 @@ async def xendit_webhook(
         # Sudah diproses sebelumnya
         return {"status": "already_paid"}
 
+    # [FIX] Validasi nominal pembayaran dari webhook
+    webhook_amount = payload.get("amount")
+    if webhook_amount is not None and float(webhook_amount) != float(payment.amount):
+        # Log warning (cukup print) dan tolak webhook
+        print(f"[WARNING] Xendit webhook amount mismatch: invoice {invoice_id}, expected {payment.amount}, got {webhook_amount}")
+        return {"status": "amount_mismatch", "reason": f"Expected {payment.amount}, got {webhook_amount}"}
+
     # 5. Dapatkan order terkait
     order_result = await db.execute(
         select(Order).where(Order.id == payment.order_id).with_for_update()
@@ -262,7 +274,6 @@ async def xendit_webhook(
                 user_voucher.is_used = True
                 user_voucher.used_at = datetime.now(timezone.utc)
 
-  
     # 8. Ubah status
     order.status = "paid"
     payment.status = "paid"

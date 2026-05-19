@@ -1,9 +1,12 @@
+# review_service.py
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.models import Review, Product
 
 async def update_product_rating(db: AsyncSession, product_id: int):
     """Hitung ulang rata-rata rating dan total review untuk suatu produk"""
+    # Hitung rata-rata rating dan jumlah review aktif
     result = await db.execute(
         select(func.avg(Review.rating), func.count(Review.id))
         .where(Review.product_id == product_id, Review.is_deleted == False)

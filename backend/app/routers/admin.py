@@ -1,3 +1,5 @@
+# admin.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
@@ -14,17 +16,19 @@ async def get_dashboard(
     db: AsyncSession = Depends(get_db),
     admin: UserModel = Depends(require_admin)
 ):
+    # Hitung total produk aktif
     total_products_result = await db.execute(
         select(func.count()).select_from(Product).where(Product.is_deleted == False)
     )
     total_products = total_products_result.scalar() or 0
 
-    # FIX: tambah filter is_deleted=False untuk order
+    # Hitung total pesanan aktif (belum dihapus)
     total_orders_result = await db.execute(
         select(func.count()).select_from(Order).where(Order.is_deleted == False)
     )
     total_orders = total_orders_result.scalar() or 0
 
+    # Hitung total pendapatan dari pesanan berstatus paid
     total_revenue_result = await db.execute(
         select(func.sum(Order.total_price)).where(
             Order.status == "paid",
@@ -33,11 +37,13 @@ async def get_dashboard(
     )
     total_revenue = total_revenue_result.scalar() or 0
 
+    # Hitung total user aktif
     total_users_result = await db.execute(
         select(func.count()).select_from(User).where(User.is_deleted == False)
     )
     total_users = total_users_result.scalar() or 0
 
+    # Hitung jumlah pesanan per status
     statuses = ["pending", "paid", "shipped", "delivered", "cancelled"]
     orders_by_status = {}
     for status in statuses:
@@ -49,6 +55,7 @@ async def get_dashboard(
         )
         orders_by_status[status] = count_result.scalar() or 0
 
+    # Ambil 5 produk terlaris berdasarkan pesanan yang sudah paid
     top_products_result = await db.execute(
         select(
             Product.id,
@@ -67,6 +74,7 @@ async def get_dashboard(
         for row in top_products_result
     ]
 
+    # Hitung pendapatan per bulan untuk 6 bulan terakhir
     now = datetime.now(timezone.utc)
     revenue_by_month = []
     for i in range(5, -1, -1):

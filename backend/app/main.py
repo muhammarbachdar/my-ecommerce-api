@@ -1,3 +1,5 @@
+# main.py
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -24,6 +26,7 @@ app = FastAPI(
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
+        # Catat waktu dan log setiap request
         start_time = time.time()
         response = await call_next(request)
         process_time = time.time() - start_time
@@ -61,6 +64,7 @@ async def root():
 
 @app.get("/health")
 async def health_check(db: AsyncSession = Depends(get_db)):
+    # Cek koneksi database dan redis untuk health check
     try:
         await db.execute(text("SELECT 1"))
         db_status = "up"
@@ -75,6 +79,7 @@ async def health_check(db: AsyncSession = Depends(get_db)):
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request, exc):
+    # Log error HTTP dengan request_id
     logger.error(f"HTTP {exc.status_code}: {exc.detail} - request_id: {getattr(request.state, 'request_id', 'N/A')}")
     return JSONResponse(
         status_code=exc.status_code,
@@ -83,6 +88,7 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request, exc):
+    # Tangani error tak terduga dan log dengan stack trace
     logger.exception(f"Unhandled exception: {exc} - request_id: {getattr(request.state, 'request_id', 'N/A')}")
     return JSONResponse(
         status_code=500,
@@ -92,6 +98,7 @@ async def generic_exception_handler(request, exc):
 # FIX: graceful shutdown
 @app.on_event("shutdown")
 async def shutdown_event():
+    # Tutup koneksi database dengan rapi saat aplikasi mati
     logger.info("Shutting down, closing database connection pool...")
     await engine.dispose()
     logger.info("Database connections closed.")

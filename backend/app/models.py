@@ -1,3 +1,5 @@
+# models.py
+
 from sqlalchemy import String, Float, Text, Integer, Boolean, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey

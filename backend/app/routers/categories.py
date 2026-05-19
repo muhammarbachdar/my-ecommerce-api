@@ -1,3 +1,5 @@
+# categories.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -17,11 +19,13 @@ async def get_all_categories(
     limit: int = 20,
     db: AsyncSession = Depends(get_db)
 ):
+    # Hitung total kategori yang belum dihapus
     total_result = await db.execute(
         select(func.count()).select_from(Category).where(Category.is_deleted == False)
     )
     total = total_result.scalar()
     
+    # Ambil daftar kategori aktif
     result = await db.execute(
         select(Category)
         .where(Category.is_deleted == False)
@@ -39,6 +43,7 @@ async def get_category(
     category_id: int,
     db: AsyncSession = Depends(get_db)
 ):
+    # Ambil detail kategori berdasarkan ID
     result = await db.execute(
         select(Category).where(
             Category.id == category_id,
@@ -56,6 +61,7 @@ async def create_category(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
+    # Cek apakah slug kategori sudah dipakai
     result = await db.execute(
         select(Category).where(
             Category.slug == category.slug,
@@ -66,6 +72,7 @@ async def create_category(
     if existing:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category with this slug already exists")
     
+    # Buat kategori baru
     db_category = Category(name=category.name, slug=category.slug)
     db.add(db_category)
     await db.commit()
@@ -79,6 +86,7 @@ async def update_category(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
+    # Cari kategori yang akan diupdate
     result = await db.execute(
         select(Category).where(
             Category.id == category_id,
@@ -89,6 +97,7 @@ async def update_category(
     if not category:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
     
+    # Jika mengganti slug, pastikan tidak bentrok dengan kategori lain
     if category_update.slug != category.slug:
         dup_result = await db.execute(
             select(Category).where(
@@ -100,6 +109,7 @@ async def update_category(
         if dup_result.scalar_one_or_none():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category with this slug already exists")
     
+    # Update data kategori
     category.name = category_update.name
     category.slug = category_update.slug
     await db.commit()
@@ -112,6 +122,7 @@ async def delete_category(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
+    # Soft delete kategori
     result = await db.execute(
         select(Category).where(
             Category.id == category_id,
