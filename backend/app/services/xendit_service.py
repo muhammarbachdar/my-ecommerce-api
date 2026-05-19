@@ -25,7 +25,7 @@ class XenditService:
         auth = (self.secret_key, "")  # Basic Auth dengan username = secret key, password kosong
         payload = {
             "external_id": external_id,
-            "amount": amount,
+            "amount": float(amount),
             "payer_email": payer_email,
             "description": description,
             "invoice_duration": 86400,  # 24 jam dalam detik
