@@ -54,11 +54,9 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     category_id: Optional[int] = None
 
-    # FIX: validasi price dan stock
     @field_validator("price")
     @classmethod
     def price_positive(cls, v):
-        # Harga harus lebih dari 0
         if v <= 0:
             raise ValueError("Price must be greater than 0")
         return v
@@ -66,7 +64,6 @@ class ProductBase(BaseModel):
     @field_validator("stock")
     @classmethod
     def stock_non_negative(cls, v):
-        # Stok tidak boleh negatif
         if v < 0:
             raise ValueError("Stock cannot be negative")
         return v
@@ -117,7 +114,8 @@ class CartResponse(BaseModel):
 # ==================== ORDER SCHEMAS ====================
 class OrderCreate(BaseModel):
     shipping_address: Optional[str] = None
-    cart_item_ids: List[int] = []  # ✅ TAMBAHAN: daftar ID item keranjang yang dipilih
+    cart_item_ids: List[int] = []
+    voucher_code: Optional[str] = None  # ← PATCH 2: tambah field
 
 class OrderItemResponse(BaseModel):
     id: int
@@ -128,7 +126,6 @@ class OrderItemResponse(BaseModel):
     price_at_purchase: float
     subtotal: float
     created_at: datetime
-    
 
     model_config = {"from_attributes": True}
 
@@ -138,13 +135,15 @@ class OrderResponse(BaseModel):
     total_price: float
     status: OrderStatus
     shipping_address: Optional[str] = None
+    discount_amount: Optional[float] = 0.0   # ← PATCH 2: tambah
+    final_price: Optional[float] = None      # ← PATCH 2: tambah
     created_at: datetime
     items: List[OrderItemResponse] = []
 
     model_config = {"from_attributes": True}
 
 class OrderWithPaymentResponse(OrderResponse):
-    invoice_url: Optional[str] = None    
+    invoice_url: Optional[str] = None
 
 class PaymentCreate(BaseModel):
     order_id: int

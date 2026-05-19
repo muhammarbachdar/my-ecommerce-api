@@ -2,25 +2,24 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from typing import List
 from datetime import datetime, timezone
 from app.database import get_db
 from app.models import Address, User
 from app.schemas import AddressCreate, AddressUpdate, AddressResponse
 from app.core.security import get_current_user, require_admin
-from app.utils.pagination import paginated_response   # FIX: import
+from app.utils.pagination import paginated_response
 
 router = APIRouter(tags=["addresses"])
 
-@router.get("/", response_model=dict)   # FIX: rubah response_model
+@router.get("/", response_model=dict)
 async def get_my_addresses(
     page: int = 1,
     limit: int = 20,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Hitung total alamat milik user yang belum dihapus
     total_result = await db.execute(
         select(func.count()).select_from(Address).where(
             Address.user_id == current_user.id,
@@ -29,7 +28,6 @@ async def get_my_addresses(
     )
     total = total_result.scalar()
 
-    # Ambil daftar alamat user dengan urutan default terlebih dahulu
     result = await db.execute(
         select(Address)
         .where(
@@ -43,32 +41,12 @@ async def get_my_addresses(
     addresses = result.scalars().all()
     return paginated_response(addresses, page, limit, total)
 
-@router.get("/{address_id}", response_model=AddressResponse)
-async def get_address(
-    address_id: int,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    # Cari alamat milik user yang belum dihapus
-    result = await db.execute(
-        select(Address).where(
-            Address.id == address_id,
-            Address.user_id == current_user.id,
-            Address.is_deleted == False
-        )
-    )
-    address = result.scalar_one_or_none()
-    if not address:
-        raise HTTPException(status_code=404, detail="Address not found")
-    return address
-
 @router.post("/", response_model=AddressResponse, status_code=201)
 async def create_address(
     address_data: AddressCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Jika alamat baru dijadikan default, reset default alamat lain user
     if address_data.is_default:
         result = await db.execute(
             select(Address).where(
@@ -80,7 +58,6 @@ async def create_address(
         for addr in existing_addresses:
             addr.is_default = False
 
-    # Buat alamat baru
     db_address = Address(
         user_id=current_user.id,
         label=address_data.label,
@@ -97,6 +74,53 @@ async def create_address(
     await db.refresh(db_address)
     return db_address
 
+@router.get("/admin/user/{user_id}", response_model=dict)
+async def get_addresses_by_user(
+    user_id: int,
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    total_result = await db.execute(
+        select(func.count()).select_from(Address).where(
+            Address.user_id == user_id,
+            Address.is_deleted == False
+        )
+    )
+    total = total_result.scalar()
+
+    result = await db.execute(
+        select(Address)
+        .where(
+            Address.user_id == user_id,
+            Address.is_deleted == False
+        )
+        .order_by(Address.is_default.desc(), Address.created_at.desc())
+        .offset((page - 1) * limit)
+        .limit(limit)
+    )
+    addresses = result.scalars().all()
+    return paginated_response(addresses, page, limit, total)
+
+@router.get("/{address_id}", response_model=AddressResponse)
+async def get_address(
+    address_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Address).where(
+            Address.id == address_id,
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+    )
+    address = result.scalar_one_or_none()
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    return address
+
 @router.put("/{address_id}", response_model=AddressResponse)
 async def update_address(
     address_id: int,
@@ -104,7 +128,6 @@ async def update_address(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cari alamat yang akan diupdate
     result = await db.execute(
         select(Address).where(
             Address.id == address_id,
@@ -118,7 +141,6 @@ async def update_address(
 
     update_data = address_update.model_dump(exclude_unset=True)
 
-    # Jika mengubah menjadi default, reset default alamat lain user
     if update_data.get("is_default") and not address.is_default:
         result = await db.execute(
             select(Address).where(
@@ -130,7 +152,6 @@ async def update_address(
         for addr in existing_addresses:
             addr.is_default = False
 
-    # Terapkan perubahan pada alamat
     for key, value in update_data.items():
         setattr(address, key, value)
 
@@ -144,7 +165,6 @@ async def delete_address(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Cari alamat yang akan dihapus (soft delete)
     result = await db.execute(
         select(Address).where(
             Address.id == address_id,
@@ -156,7 +176,6 @@ async def delete_address(
     if not address:
         raise HTTPException(status_code=404, detail=f"Address with id {address_id} not found")
 
-    # Hitung jumlah alamat user yang masih aktif
     count_result = await db.execute(
         select(func.count()).select_from(Address).where(
             Address.user_id == current_user.id,
@@ -165,18 +184,20 @@ async def delete_address(
     )
     count = count_result.scalar()
 
-    # Soft delete alamat
+    # Simpan nilai is_default sebelum soft delete dan commit
+    was_default = address.is_default
+
     address.is_deleted = True
     address.deleted_at = datetime.now(timezone.utc)
     await db.commit()
 
-    # Jika alamat yang dihapus adalah default dan masih ada alamat lain, jadikan alamat pertama sebagai default
-    if address.is_default and count > 1:
+    # Gunakan was_default, bukan address.is_default (yang sudah stale setelah commit)
+    if was_default and count > 1:
         first_address_result = await db.execute(
             select(Address).where(
                 Address.user_id == current_user.id,
                 Address.is_deleted == False
-            ).limit(1)
+            ).order_by(Address.created_at.asc()).limit(1)
         )
         first_address = first_address_result.scalar_one_or_none()
         if first_address:
@@ -185,33 +206,45 @@ async def delete_address(
 
     return None
 
-@router.get("/admin/user/{user_id}", response_model=dict)   # FIX: tambah pagination juga
-async def get_addresses_by_user(
-    user_id: int,
-    page: int = 1,
-    limit: int = 20,
+# ==================== PATCH 3: set-default endpoint ====================
+@router.patch("/{address_id}/set-default", response_model=AddressResponse)
+async def set_default_address(
+    address_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_admin)
+    current_user: User = Depends(get_current_user)
 ):
-    # Admin: hitung total alamat user yang belum dihapus
-    total_result = await db.execute(
-        select(func.count()).select_from(Address).where(
-            Address.user_id == user_id,
-            Address.is_deleted == False
-        )
-    )
-    total = total_result.scalar()
-
-    # Admin: ambil daftar alamat user dengan urutan default terlebih dahulu
+    # Lock dan cari alamat target
     result = await db.execute(
         select(Address)
         .where(
-            Address.user_id == user_id,
+            Address.id == address_id,
+            Address.user_id == current_user.id,
             Address.is_deleted == False
         )
-        .order_by(Address.is_default.desc(), Address.created_at.desc())
-        .offset((page - 1) * limit)
-        .limit(limit)
+        .with_for_update()
     )
-    addresses = result.scalars().all()
-    return paginated_response(addresses, page, limit, total)
+    target_address = result.scalar_one_or_none()
+    if not target_address:
+        raise HTTPException(status_code=404, detail="Address not found")
+
+    # Idempotent: jika sudah default, langsung return
+    if target_address.is_default:
+        await db.refresh(target_address)
+        return target_address
+
+    # Reset semua alamat user menjadi non-default menggunakan UPDATE langsung
+    await db.execute(
+        update(Address)
+        .where(
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+        .values(is_default=False)
+        .execution_options(synchronize_session="fetch")
+    )
+
+    # Set alamat target menjadi default
+    target_address.is_default = True
+    await db.commit()
+    await db.refresh(target_address)
+    return target_address

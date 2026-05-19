@@ -2,10 +2,10 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, or_   # FIX: tambah func
+from sqlalchemy import select, func, or_
 from typing import List, Optional
 from app.database import get_db
-from app.models import Product, Category   # FIX: tambah Category
+from app.models import Product, Category
 from app.schemas import ProductCreate, ProductResponse
 from app.core.security import require_admin
 from app.models import User
@@ -21,7 +21,6 @@ async def create_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    # Validasi kategori jika diberikan
     if product.category_id is not None:
         cat_result = await db.execute(
             select(Category).where(
@@ -32,7 +31,6 @@ async def create_product(
         if not cat_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Category not found or deleted")
 
-    # Buat produk baru
     db_product = Product(
         product_name=product.product_name,
         price=product.price,
@@ -46,7 +44,7 @@ async def create_product(
     await db.refresh(db_product)
     return db_product
 
-# Get all products with search & filter
+# Get all products with search & filter (public, only active products)
 @router.get("/", response_model=dict)
 async def get_all_products(
     page: int = 1,
@@ -57,7 +55,6 @@ async def get_all_products(
     max_price: Optional[float] = None,
     db: AsyncSession = Depends(get_db)
 ):
-    # Bangun query total produk dengan filter
     total_query = select(func.count()).select_from(Product).where(Product.is_deleted == False)
     if q:
         total_query = total_query.where(Product.product_name.ilike(f"%{q}%"))
@@ -71,7 +68,6 @@ async def get_all_products(
     total_result = await db.execute(total_query)
     total = total_result.scalar() or 0
 
-    # Bangun query produk dengan filter yang sama
     query = select(Product).where(Product.is_deleted == False)
     if q:
         query = query.where(Product.product_name.ilike(f"%{q}%"))
@@ -91,13 +87,46 @@ async def get_all_products(
     product_schemas = [ProductResponse.model_validate(p) for p in products]
     return paginated_response(product_schemas, page, limit, total)
 
-# Get product by id
+# Admin endpoint to get all products (including soft-deleted)
+@router.get("/admin/all", response_model=dict)
+async def get_all_products_admin(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Hitung total semua produk (termasuk yang soft-deleted)
+    total_result = await db.execute(select(func.count()).select_from(Product))
+    total = total_result.scalar() or 0
+
+    # Ambil semua produk tanpa filter is_deleted
+    offset = (page - 1) * limit
+    result = await db.execute(
+        select(Product)
+        .offset(offset)
+        .limit(limit)
+        .order_by(Product.id)
+    )
+    products = result.scalars().all()
+
+    product_schemas = [ProductResponse.model_validate(p) for p in products]
+    return paginated_response(product_schemas, page, limit, total)
+
+# Upload product image (admin only)
+@router.post("/upload-image", status_code=201)
+async def upload_product_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(require_admin)
+):
+    url = await upload_image(file)
+    return {"image_url": url}
+
+# Get product by id (public)
 @router.get("/{product_id}", response_model=ProductResponse)
 async def get_product(
     product_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    # Ambil detail produk berdasarkan ID
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -112,7 +141,7 @@ async def get_product(
         )
     return product
 
-# Update product
+# Update product (admin only)
 @router.put("/{product_id}", response_model=ProductResponse)
 async def update_product(
     product_id: int,
@@ -120,7 +149,6 @@ async def update_product(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    # Cari produk yang akan diupdate
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -134,7 +162,6 @@ async def update_product(
             detail=f"Product with id {product_id} not found"
         )
 
-    # Validasi kategori jika diubah
     if product_update.category_id is not None:
         cat_result = await db.execute(
             select(Category).where(
@@ -145,7 +172,6 @@ async def update_product(
         if not cat_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Category not found or deleted")
 
-    # Update data produk
     product.product_name = product_update.product_name
     product.price = product_update.price
     product.stock = product_update.stock
@@ -157,14 +183,13 @@ async def update_product(
     await db.refresh(product)
     return product
 
-# Delete product (soft delete)
+# Delete product (soft delete, admin only)
 @router.delete("/{product_id}", status_code=204)
 async def delete_product(
     product_id: int,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
-    # Soft delete produk
     result = await db.execute(
         select(Product).where(
             Product.id == product_id,
@@ -181,13 +206,3 @@ async def delete_product(
     product.is_deleted = True
     await db.commit()
     return None
-
-# Upload product image
-@router.post("/upload-image", status_code=201)
-async def upload_product_image(
-    file: UploadFile = File(...),
-    current_user: User = Depends(require_admin)
-):
-    # Upload gambar produk ke penyimpanan
-    url = await upload_image(file)
-    return {"image_url": url}
