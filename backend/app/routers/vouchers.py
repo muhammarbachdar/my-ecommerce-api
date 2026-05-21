@@ -3,10 +3,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
-from typing import List, Optional
+from typing import List
 from datetime import datetime, timezone
 from app.database import get_db
-from app.models import Voucher, UserVoucher, VoucherUsage, Order, User
+from app.models import Voucher, UserVoucher, VoucherUsage, User
 from app.schemas import (
     VoucherCreate, VoucherUpdate, VoucherResponse,
     UserVoucherResponse, ApplyVoucher
@@ -124,10 +124,9 @@ async def get_available_vouchers(
     available = []
     for voucher in vouchers:
         user_usage = await db.execute(
-            select(func.count()).select_from(UserVoucher).where(
-                UserVoucher.user_id == current_user.id,
-                UserVoucher.voucher_id == voucher.id,
-                UserVoucher.is_used == True
+            select(func.count()).select_from(VoucherUsage).where(
+                VoucherUsage.user_id == current_user.id,
+                VoucherUsage.voucher_id == voucher.id
             )
         )
         used_by_user = user_usage.scalar() or 0
