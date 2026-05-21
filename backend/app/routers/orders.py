@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 from typing import List
+from decimal import Decimal
 from datetime import datetime, timezone, timedelta
 from app.database import get_db
 from app.models import Order, OrderItem, Cart, Product, User, Payment, Voucher, VoucherUsage
@@ -171,11 +172,11 @@ async def create_order(
             raise HTTPException(status_code=400, detail="Voucher usage limit reached for this user")
 
         if voucher.discount_type == "percentage":
-            discount_amount = total_price * voucher.discount_value / 100
-            if voucher.max_discount and discount_amount > voucher.max_discount:
-                discount_amount = voucher.max_discount
+            discount_amount = total_price * Decimal(str(voucher.discount_value)) / 100
+            if voucher.max_discount and discount_amount > Decimal(str(voucher.max_discount)):
+                discount_amount = Decimal(str(voucher.max_discount))
         else:
-            discount_amount = min(voucher.discount_value, total_price)
+            discount_amount = min(Decimal(str(voucher.discount_value)), total_price)
 
     db_order = Order(
         user_id=current_user.id,
@@ -566,7 +567,7 @@ async def user_cancel_order(
         if voucher and voucher.used_count > 0:
             voucher.used_count -= 1
         order.applied_voucher_id = None
-        order.discount_amount = 0.0
+        order.discount_amount = Decimal('0')
 
     order.status = "cancelled"
     await db.commit()
