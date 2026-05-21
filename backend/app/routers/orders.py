@@ -139,7 +139,7 @@ async def create_order(
         })
 
     voucher = None
-    discount_amount = 0.0
+    discount_amount = Decimal('0')
     if order_data.voucher_code:
         now = datetime.now(timezone.utc)
         voucher_result = await db.execute(
@@ -230,7 +230,7 @@ async def create_order(
         db_order.status = "cancelled"
         if voucher:
             db_order.applied_voucher_id = None
-            db_order.discount_amount = 0.0
+            db_order.discount_amount = Decimal('0')
             if voucher.used_count > 0:
                 voucher.used_count -= 1
         await db.commit()
@@ -493,7 +493,7 @@ async def update_order_status(
             if voucher and voucher.used_count > 0:
                 voucher.used_count -= 1
             order.applied_voucher_id = None
-            order.discount_amount = 0.0
+            order.discount_amount = Decimal('0')
 
     order.status = status
     await db.commit()
@@ -637,7 +637,7 @@ async def auto_cancel_expired_orders(db: AsyncSession) -> int:
             if voucher and voucher.used_count > 0:
                 voucher.used_count -= 1
             order.applied_voucher_id = None
-            order.discount_amount = 0.0
+            order.discount_amount = Decimal('0')
 
         order.status = "cancelled"
 
