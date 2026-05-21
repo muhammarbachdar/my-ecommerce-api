@@ -1,0 +1,4186 @@
+﻿========== STRUCTURE ==========
+Folder PATH listing for volume New Volume
+Volume serial number is 2469-7B41
+D:\ECOMERCE-API\BACKEND
+ª   .env
+ª   add_columns.py
+ª   alembic.ini
+ª   pytest.ini
+ª   
++---.pytest_cache
+ª   ª   .gitignore
+ª   ª   CACHEDIR.TAG
+ª   ª   README.md
+ª   ª   
+ª   +---v
+ª       +---cache
+ª               lastfailed
+ª               nodeids
+ª               stepwise
+ª               
++---alembic
+ª   ª   env.py
+ª   ª   README
+ª   ª   script.py.mako
+ª   ª   
+ª   +---versions
+ª   ª   ª   45a64ff08dd3_add_average_rating_and_total_reviews_to_.py
+ª   ª   ª   64a2b6b953a5_add_xendit_fields_to_payments.py
+ª   ª   ª   69044fd674d3_add_voucher_fields_to_orders.py
+ª   ª   ª   6c9a9cabb9b1_add_soft_delete_to_address_cart_.py
+ª   ª   ª   8f295c701242_add_category_id_to_product.py
+ª   ª   ª   9a1f19ae925d_float_to_numeric_and_wishlist_constraint.py
+ª   ª   ª   9d4adbd92591_add_indexes_for_performance.py
+ª   ª   ª   a19905dbb08d_add_soft_delete_columns_to_address_cart_.py
+ª   ª   ª   bf3c22220707_initial_migration.py
+ª   ª   ª   
+ª   ª   +---__pycache__
+ª   ª           45a64ff08dd3_add_average_rating_and_total_reviews_to_.cpython-313.pyc
+ª   ª           64a2b6b953a5_add_xendit_fields_to_payments.cpython-313.pyc
+ª   ª           69044fd674d3_add_voucher_fields_to_orders.cpython-313.pyc
+ª   ª           6c9a9cabb9b1_add_soft_delete_to_address_cart_.cpython-313.pyc
+ª   ª           8f295c701242_add_category_id_to_product.cpython-313.pyc
+ª   ª           9a1f19ae925d_float_to_numeric_and_wishlist_constraint.cpython-313.pyc
+ª   ª           9d4adbd92591_add_indexes_for_performance.cpython-313.pyc
+ª   ª           a19905dbb08d_add_soft_delete_columns_to_address_cart_.cpython-313.pyc
+ª   ª           bf3c22220707_initial_migration.cpython-313.pyc
+ª   ª           
+ª   +---__pycache__
+ª           env.cpython-312.pyc
+ª           env.cpython-313.pyc
+ª           
++---app
+ª   ª   database.py
+ª   ª   main.py
+ª   ª   models.py
+ª   ª   schemas.py
+ª   ª   __init__.py
+ª   ª   
+ª   +---core
+ª   ª   ª   config.py
+ª   ª   ª   enums.py
+ª   ª   ª   limiter.py
+ª   ª   ª   logging.py
+ª   ª   ª   security.py
+ª   ª   ª   __init__.py
+ª   ª   ª   
+ª   ª   +---__pycache__
+ª   ª           config.cpython-312.pyc
+ª   ª           config.cpython-313.pyc
+ª   ª           config.cpython-314.pyc
+ª   ª           enums.cpython-313.pyc
+ª   ª           limiter.cpython-313.pyc
+ª   ª           logging.cpython-313.pyc
+ª   ª           security.cpython-312.pyc
+ª   ª           security.cpython-313.pyc
+ª   ª           __init__.cpython-312.pyc
+ª   ª           __init__.cpython-313.pyc
+ª   ª           __init__.cpython-314.pyc
+ª   ª           
+ª   +---middleware
+ª   ª   ª   request_id.py
+ª   ª   ª   
+ª   ª   +---__pycache__
+ª   ª           request_id.cpython-313.pyc
+ª   ª           
+ª   +---routers
+ª   ª   ª   addresses.py
+ª   ª   ª   admin.py
+ª   ª   ª   auth.py
+ª   ª   ª   carts.py
+ª   ª   ª   categories.py
+ª   ª   ª   orders.py
+ª   ª   ª   payments.py
+ª   ª   ª   products.py
+ª   ª   ª   reviews.py
+ª   ª   ª   users.py
+ª   ª   ª   vouchers.py
+ª   ª   ª   wishlist.py
+ª   ª   ª   __init__.py
+ª   ª   ª   
+ª   ª   +---__pycache__
+ª   ª           addresses.cpython-312.pyc
+ª   ª           addresses.cpython-313.pyc
+ª   ª           admin.cpython-312.pyc
+ª   ª           admin.cpython-313.pyc
+ª   ª           auth.cpython-312.pyc
+ª   ª           auth.cpython-313.pyc
+ª   ª           carts.cpython-312.pyc
+ª   ª           carts.cpython-313.pyc
+ª   ª           categories.cpython-312.pyc
+ª   ª           categories.cpython-313.pyc
+ª   ª           orders.cpython-312.pyc
+ª   ª           orders.cpython-313.pyc
+ª   ª           payments.cpython-312.pyc
+ª   ª           payments.cpython-313.pyc
+ª   ª           products.cpython-312.pyc
+ª   ª           products.cpython-313.pyc
+ª   ª           reviews.cpython-312.pyc
+ª   ª           reviews.cpython-313.pyc
+ª   ª           users.cpython-312.pyc
+ª   ª           users.cpython-313.pyc
+ª   ª           vouchers.cpython-312.pyc
+ª   ª           vouchers.cpython-313.pyc
+ª   ª           wishlist.cpython-312.pyc
+ª   ª           wishlist.cpython-313.pyc
+ª   ª           __init__.cpython-312.pyc
+ª   ª           __init__.cpython-313.pyc
+ª   ª           
+ª   +---services
+ª   ª   ª   auth_service.py
+ª   ª   ª   review_service.py
+ª   ª   ª   xendit_service.py
+ª   ª   ª   __init__.py
+ª   ª   ª   
+ª   ª   +---__pycache__
+ª   ª           auth_service.cpython-312.pyc
+ª   ª           auth_service.cpython-313.pyc
+ª   ª           xendit_service.cpython-313.pyc
+ª   ª           __init__.cpython-312.pyc
+ª   ª           __init__.cpython-313.pyc
+ª   ª           
+ª   +---utils
+ª   ª   ª   pagination.py
+ª   ª   ª   uploader.py
+ª   ª   ª   
+ª   ª   +---__pycache__
+ª   ª           pagination.cpython-312.pyc
+ª   ª           pagination.cpython-313.pyc
+ª   ª           uploader.cpython-312.pyc
+ª   ª           uploader.cpython-313.pyc
+ª   ª           
+ª   +---__pycache__
+ª           database.cpython-312.pyc
+ª           database.cpython-313.pyc
+ª           database.cpython-314.pyc
+ª           main.cpython-312.pyc
+ª           main.cpython-313.pyc
+ª           main.cpython-314.pyc
+ª           models.cpython-312.pyc
+ª           models.cpython-313.pyc
+ª           models.cpython-314.pyc
+ª           schemas.cpython-312.pyc
+ª           schemas.cpython-313.pyc
+ª           schemas.cpython-314.pyc
+ª           __init__.cpython-312.pyc
+ª           __init__.cpython-313.pyc
+ª           __init__.cpython-314.pyc
+ª           
++---tests
+    ª   conftest.py
+    ª   test_addresses.py
+    ª   test_admin.py
+    ª   test_auth.py
+    ª   test_cart.py
+    ª   test_categories.py
+    ª   test_orders.py
+    ª   test_payments.py
+    ª   test_products.py
+    ª   test_reviews.py
+    ª   test_users.py
+    ª   test_voucher.py
+    ª   test_wishlist.py
+    ª   __init__.py
+    ª   
+    +---__pycache__
+            conftest.cpython-312-pytest-8.3.4.pyc
+            conftest.cpython-313-pytest-8.3.4.pyc
+            test_addresses.cpython-312-pytest-8.3.4.pyc
+            test_addresses.cpython-313-pytest-8.3.4.pyc
+            test_admin.cpython-312-pytest-8.3.4.pyc
+            test_admin.cpython-313-pytest-8.3.4.pyc
+            test_auth.cpython-312-pytest-8.3.4.pyc
+            test_auth.cpython-313-pytest-8.3.4.pyc
+            test_cart.cpython-312-pytest-8.3.4.pyc
+            test_cart.cpython-313-pytest-8.3.4.pyc
+            test_categories.cpython-312-pytest-8.3.4.pyc
+            test_categories.cpython-313-pytest-8.3.4.pyc
+            test_orders.cpython-312-pytest-8.3.4.pyc
+            test_orders.cpython-313-pytest-8.3.4.pyc
+            test_payments.cpython-312-pytest-8.3.4.pyc
+            test_payments.cpython-313-pytest-8.3.4.pyc
+            test_products.cpython-312-pytest-8.3.4.pyc
+            test_products.cpython-313-pytest-8.3.4.pyc
+            test_reviews.cpython-312-pytest-8.3.4.pyc
+            test_reviews.cpython-313-pytest-8.3.4.pyc
+            test_users.cpython-312-pytest-8.3.4.pyc
+            test_users.cpython-313-pytest-8.3.4.pyc
+            test_voucher.cpython-312-pytest-8.3.4.pyc
+            test_voucher.cpython-313-pytest-8.3.4.pyc
+            test_wishlist.cpython-312-pytest-8.3.4.pyc
+            test_wishlist.cpython-313-pytest-8.3.4.pyc
+            __init__.cpython-312.pyc
+            __init__.cpython-313.pyc
+            
+
+========== D:\ecomerce-api\backend\app\__init__.py ==========
+
+
+========== D:\ecomerce-api\backend\app\core\__init__.py ==========
+
+
+========== D:\ecomerce-api\backend\app\core\config.py ==========
+from typing import Optional
+from pydantic_settings import BaseSettings
+from pydantic import Field, field_validator
+from typing import List
+
+class Settings(BaseSettings):
+    # Database
+    DATABASE_URL: str
+
+    # Redis
+    REDIS_URL: Optional[str] = None
+
+    # JWT
+    SECRET_KEY: str = Field(..., min_length=32)
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # Email (opsional)
+    MAIL_USERNAME: str = ""
+    MAIL_PASSWORD: str = ""
+    MAIL_FROM: str = ""
+    MAIL_SERVER: str = ""
+    MAIL_PORT: int = 587
+
+    # Cloudinary
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+
+    # Database echo flag
+    DB_ECHO: bool = False
+
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001"
+
+    # Xendit Configuration
+    XENDIT_SECRET_KEY: str = ""
+    XENDIT_WEBHOOK_TOKEN: str = ""
+    XENDIT_API_BASE_URL: str = "https://api.xendit.co"
+
+    class Config:
+        env_file = ".env"
+
+    @property
+    def allowed_origins_list(self) -> List[str]:
+        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
+
+    @field_validator("SECRET_KEY")
+    @classmethod
+    def check_secret_key_length(cls, v):
+        if len(v) < 32:
+            raise ValueError("SECRET_KEY must be at least 32 characters long")
+        return v
+
+settings = Settings()
+
+
+========== D:\ecomerce-api\backend\app\core\enums.py ==========
+from enum import StrEnum
+
+class OrderStatus(StrEnum):
+    PENDING = "pending"
+    PAID = "paid"
+    SHIPPED = "shipped"
+    DELIVERED = "delivered"
+    CANCELLED = "cancelled"
+
+class PaymentStatus(StrEnum):
+    PENDING = "pending"
+    PAID = "paid"
+    FAILED = "failed"
+
+class DiscountType(StrEnum):
+    PERCENTAGE = "percentage"
+    FIXED = "fixed"
+
+
+========== D:\ecomerce-api\backend\app\core\limiter.py ==========
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
+
+# Inisialisasi limiter dengan Redis (jika ada) atau memory
+# Untuk production gunakan Redis: storage_uri="redis://localhost:6379"
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
+def setup_rate_limit(app: FastAPI):
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+========== D:\ecomerce-api\backend\app\core\logging.py ==========
+import logging
+from loguru import logger
+import sys
+
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = record.levelno
+
+        frame, depth = logging.currentframe(), 2
+        while frame.f_code.co_filename == logging.__file__:
+            frame = frame.f_back
+            depth += 1
+
+        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+
+def setup_logging():
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name} | {message}",
+        level="DEBUG",
+        colorize=True
+    )
+    logger.add(
+        "logs/app_{time:YYYY-MM-DD}.json",
+        format="{time} | {level} | {name} | {message}",
+        level="INFO",
+        rotation="1 day",
+        retention="30 days",
+        serialize=True
+    )
+    logging.basicConfig(handlers=[InterceptHandler()], level=0)
+    return logger
+
+
+========== D:\ecomerce-api\backend\app\core\security.py ==========
+from passlib.context import CryptContext
+from jose import JWTError, jwt
+from datetime import datetime, timedelta, timezone
+from app.core.config import settings
+from fastapi import Depends, HTTPException, status, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.database import get_db
+from app.models import User
+from sqlalchemy import select
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# HTTPBearer dengan auto_error=False agar tidak langsung 401 jika tidak ada header
+security = HTTPBearer(auto_error=False)
+
+# ========== HASH & VERIFY ==========
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+# ========== JWT TOKEN ==========
+def create_access_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+def create_refresh_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+    )
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+# ========== GET CURRENT USER (mendukung header & cookie) ==========
+async def get_current_user(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: AsyncSession = Depends(get_db)
+) -> User:
+    token = None
+
+    # 1. Prioritaskan header Authorization
+    if credentials:
+        token = credentials.credentials
+
+    # 2. Jika tidak ada, cek cookie 'access_token'
+    if not token:
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    result = await db.execute(select(User).where(User.id == int(user_id)))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    if user.is_deleted:
+        raise HTTPException(status_code=401, detail="User account disabled")
+    return user
+
+# ========== REQUIRE ADMIN ==========
+async def require_admin(current_user: User = Depends(get_current_user)):
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+
+========== D:\ecomerce-api\backend\app\database.py ==========
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.orm import DeclarativeBase
+from app.core.config import settings
+
+# Ambil DATABASE_URL dari settings
+DATABASE_URL = settings.DATABASE_URL
+
+# Paksa pakai asyncpg (bukan psycopg2)
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
+
+# Buat engine
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=settings.DB_ECHO,   # FIX: gunakan dari env, default False
+    pool_size=5,
+    max_overflow=10
+)
+
+# Session factory
+AsyncSessionLocal = async_sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
+
+# Base class untuk models
+class Base(DeclarativeBase):
+    pass
+
+# Dependency untuk mendapatkan session
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+
+========== D:\ecomerce-api\backend\app\main.py ==========
+# main.py
+
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.base import BaseHTTPMiddleware
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+import time
+
+from app.routers import auth, products, categories, carts, users, orders, payments, wishlist, reviews, vouchers, addresses, admin
+from app.middleware.request_id import RequestIDMiddleware
+from app.database import get_db, engine   # FIX: import engine
+from app.core.limiter import limiter, setup_rate_limit
+from app.core.logging import setup_logging
+from app.core.config import settings
+
+logger = setup_logging()
+
+app = FastAPI(
+    title="E-commerce API",
+    version="1.0.0",
+    redirect_slashes=False
+)
+
+class LoggingMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # Catat waktu dan log setiap request
+        start_time = time.time()
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        logger.info(f"{request.method} {request.url.path} - {response.status_code} - {process_time:.3f}s")
+        return response
+
+app.add_middleware(LoggingMiddleware)
+app.add_middleware(RequestIDMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+setup_rate_limit(app)
+
+app.include_router(auth.router, prefix="/api/v1/auth")
+app.include_router(products.router, prefix="/api/v1/products")
+app.include_router(categories.router, prefix="/api/v1/categories")
+app.include_router(carts.router, prefix="/api/v1/carts")
+app.include_router(users.router, prefix="/api/v1/users")
+app.include_router(orders.router, prefix="/api/v1/orders")
+app.include_router(payments.router, prefix="/api/v1/payments")
+app.include_router(wishlist.router, prefix="/api/v1/wishlist")
+app.include_router(reviews.router, prefix="/api/v1/reviews")
+app.include_router(vouchers.router, prefix="/api/v1/vouchers")
+app.include_router(addresses.router, prefix="/api/v1/addresses")
+app.include_router(admin.router, prefix="/api/v1/admin")
+
+@app.get("/")
+async def root():
+    return {"message": "E-commerce API is running"}
+
+@app.get("/health")
+async def health_check(db: AsyncSession = Depends(get_db)):
+    # Cek koneksi database dan redis untuk health check
+    try:
+        await db.execute(text("SELECT 1"))
+        db_status = "up"
+    except Exception:
+        db_status = "down"
+
+    redis_status = "up"
+
+    if db_status == "down":
+        return JSONResponse(status_code=503, content={"status": "unhealthy", "database": db_status})
+    return {"status": "healthy", "database": db_status, "redis": redis_status}
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    # Log error HTTP dengan request_id
+    logger.error(f"HTTP {exc.status_code}: {exc.detail} - request_id: {getattr(request.state, 'request_id', 'N/A')}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail, "request_id": getattr(request.state, 'request_id', None)}
+    )
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request, exc):
+    # Tangani error tak terduga dan log dengan stack trace
+    logger.exception(f"Unhandled exception: {exc} - request_id: {getattr(request.state, 'request_id', 'N/A')}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error", "request_id": getattr(request.state, 'request_id', None)}
+    )
+
+# FIX: graceful shutdown
+@app.on_event("shutdown")
+async def shutdown_event():
+    # Tutup koneksi database dengan rapi saat aplikasi mati
+    logger.info("Shutting down, closing database connection pool...")
+    await engine.dispose()
+    logger.info("Database connections closed.")
+
+
+========== D:\ecomerce-api\backend\app\middleware\request_id.py ==========
+from starlette.middleware.base import BaseHTTPMiddleware
+from uuid import uuid4
+from fastapi import Request
+from starlette.responses import Response
+
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        request_id = request.headers.get("X-Request-ID", str(uuid4()))
+        request.state.request_id = request_id
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request_id
+        return response
+
+
+========== D:\ecomerce-api\backend\app\models.py ==========
+# === FILE: app/models.py ===
+from sqlalchemy import String, Float, Text, Integer, Boolean, DateTime, UniqueConstraint, Numeric
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from datetime import datetime, timezone
+from decimal import Decimal
+from app.database import Base
+from app.core.enums import OrderStatus, PaymentStatus, DiscountType
+
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=True)  # â† TAMBAH
+    phone: Mapped[str] = mapped_column(String(20), nullable=True)  # â† TAMBAH
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class Product(Base):
+    __tablename__ = "products"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    product_name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    price: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False, index=True)  # FIX: changed to Decimal
+    stock: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    image_url: Mapped[str] = mapped_column(String(500), nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=True)
+    category: Mapped["Category"] = relationship("Category", lazy="selectin")
+    average_rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)  # tetap Float
+    total_reviews: Mapped[int] = mapped_column(Integer, default=0, nullable=False) 
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class Cart(Base):
+    __tablename__ = "carts"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey('products.id'), index=True) 
+    quantity: Mapped[int] = mapped_column(nullable=False, default=1)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), 
+        default=lambda: datetime.now(timezone.utc)
+    )
+    product: Mapped["Product"] = relationship("Product", lazy="selectin")
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class Wishlist(Base):
+    __tablename__ = "wishlists"
+
+    __table_args__ = (UniqueConstraint('user_id', 'product_id', name='uq_user_product_wishlist'),)  # FIX: added unique constraint
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), index=True)
+    total_price: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
+    status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING)
+    shipping_address: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    items = relationship("OrderItem", back_populates="order", lazy="selectin")
+    applied_voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id"), nullable=True)
+    discount_amount: Mapped[Decimal] = mapped_column(Numeric(19, 4), default=Decimal("0"))  # FIX: changed to Decimal
+    # Relasi (opsional)
+    applied_voucher: Mapped["Voucher"] = relationship("Voucher", foreign_keys=[applied_voucher_id])
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class OrderItem(Base):
+    __tablename__ = "orders_items"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey('orders.id'), index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey('products.id'), index=True) 
+    quantity: Mapped[int] = mapped_column(nullable=False, default=1)
+    price_at_purchase: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    order = relationship("Order", back_populates="items")
+    product = relationship("Product", lazy="selectin")
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
+    method: Mapped[str] = mapped_column(String(50), nullable=False)  # bank_transfer, credit_card, ewallet, xendit
+    amount: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
+    status: Mapped[str] = mapped_column(String(20), default=OrderStatus.PENDING)
+    payment_url: Mapped[str] = mapped_column(String(500), nullable=True)  # URL dari Xendit
+    paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    
+    # Field baru untuk Xendit
+    xendit_invoice_id: Mapped[str] = mapped_column(String(100), nullable=True, index=True)
+    invoice_url: Mapped[str] = mapped_column(String(500), nullable=True)
+    
+class Category(Base):
+    __tablename__ = "categories"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    slug: Mapped[str] = mapped_column(String(100), unique=True, index=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class Review(Base):
+    __tablename__ = "reviews"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    comment: Mapped[str] = mapped_column(Text, nullable=True)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+class Voucher(Base):
+    __tablename__ = "vouchers"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    code: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    discount_type: Mapped[str] = mapped_column(String(20), default=DiscountType.PERCENTAGE)  # percentage, fixed
+    discount_value: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
+    min_purchase: Mapped[Decimal] = mapped_column(Numeric(19, 4), default=Decimal("0"))  # FIX: changed to Decimal
+    max_discount: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=True)  # FIX: changed to Decimal
+    usage_limit: Mapped[int] = mapped_column(Integer, default=1)
+    usage_per_user: Mapped[int] = mapped_column(Integer, default=1)
+    used_count: Mapped[int] = mapped_column(Integer, default=0)
+    start_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    end_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class UserVoucher(Base):
+    __tablename__ = "user_vouchers"
+
+    # [FIX] Tambah UniqueConstraint untuk mencegah duplikasi klaim voucher
+    __table_args__ = (UniqueConstraint('user_id', 'voucher_id', name='uq_user_voucher'),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id", ondelete="CASCADE"))
+    is_used: Mapped[bool] = mapped_column(Boolean, default=False)
+    claimed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    used_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class VoucherUsage(Base):
+    __tablename__ = "voucher_usages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    voucher_id: Mapped[int] = mapped_column(ForeignKey("vouchers.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"))
+    discount_amount: Mapped[Decimal] = mapped_column(Numeric(19, 4), nullable=False)  # FIX: changed to Decimal
+    used_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+class Address(Base):
+    __tablename__ = "addresses"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    label: Mapped[str] = mapped_column(String(50), nullable=False)  # "Rumah", "Kantor", "Orang Tua"
+    recipient_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    full_address: Mapped[str] = mapped_column(Text, nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False)
+    province: Mapped[str] = mapped_column(String(100), nullable=False)
+    postal_code: Mapped[str] = mapped_column(String(10), nullable=False)
+    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    token: Mapped[str] = mapped_column(String(500), unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+========== D:\ecomerce-api\backend\app\routers\__init__.py ==========
+
+
+========== D:\ecomerce-api\backend\app\routers\addresses.py ==========
+# addresses.py
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, update
+from typing import List
+from datetime import datetime, timezone
+from app.database import get_db
+from app.models import Address, User
+from app.schemas import AddressCreate, AddressUpdate, AddressResponse
+from app.core.security import get_current_user, require_admin
+from app.utils.pagination import paginated_response
+
+router = APIRouter(tags=["addresses"])
+
+@router.get("/", response_model=dict)
+async def get_my_addresses(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    total_result = await db.execute(
+        select(func.count()).select_from(Address).where(
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+    )
+    total = total_result.scalar()
+
+    result = await db.execute(
+        select(Address)
+        .where(
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+        .order_by(Address.is_default.desc(), Address.created_at.desc())
+        .offset((page - 1) * limit)
+        .limit(limit)
+    )
+    addresses = result.scalars().all()
+    return paginated_response(addresses, page, limit, total)
+
+@router.post("/", response_model=AddressResponse, status_code=201)
+async def create_address(
+    address_data: AddressCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if address_data.is_default:
+        result = await db.execute(
+            select(Address).where(
+                Address.user_id == current_user.id,
+                Address.is_deleted == False
+            )
+        )
+        existing_addresses = result.scalars().all()
+        for addr in existing_addresses:
+            addr.is_default = False
+
+    db_address = Address(
+        user_id=current_user.id,
+        label=address_data.label,
+        recipient_name=address_data.recipient_name,
+        phone=address_data.phone,
+        full_address=address_data.full_address,
+        city=address_data.city,
+        province=address_data.province,
+        postal_code=address_data.postal_code,
+        is_default=address_data.is_default
+    )
+    db.add(db_address)
+    await db.commit()
+    await db.refresh(db_address)
+    return db_address
+
+@router.get("/admin/user/{user_id}", response_model=dict)
+async def get_addresses_by_user(
+    user_id: int,
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    total_result = await db.execute(
+        select(func.count()).select_from(Address).where(
+            Address.user_id == user_id,
+            Address.is_deleted == False
+        )
+    )
+    total = total_result.scalar()
+
+    result = await db.execute(
+        select(Address)
+        .where(
+            Address.user_id == user_id,
+            Address.is_deleted == False
+        )
+        .order_by(Address.is_default.desc(), Address.created_at.desc())
+        .offset((page - 1) * limit)
+        .limit(limit)
+    )
+    addresses = result.scalars().all()
+    return paginated_response(addresses, page, limit, total)
+
+@router.get("/{address_id}", response_model=AddressResponse)
+async def get_address(
+    address_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Address).where(
+            Address.id == address_id,
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+    )
+    address = result.scalar_one_or_none()
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    return address
+
+@router.put("/{address_id}", response_model=AddressResponse)
+async def update_address(
+    address_id: int,
+    address_update: AddressUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Address).where(
+            Address.id == address_id,
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+    )
+    address = result.scalar_one_or_none()
+    if not address:
+        raise HTTPException(status_code=404, detail=f"Address with id {address_id} not found")
+
+    update_data = address_update.model_dump(exclude_unset=True)
+
+    if update_data.get("is_default") and not address.is_default:
+        result = await db.execute(
+            select(Address).where(
+                Address.user_id == current_user.id,
+                Address.is_deleted == False
+            )
+        )
+        existing_addresses = result.scalars().all()
+        for addr in existing_addresses:
+            addr.is_default = False
+
+    for key, value in update_data.items():
+        setattr(address, key, value)
+
+    await db.commit()
+    await db.refresh(address)
+    return address
+
+@router.delete("/{address_id}", status_code=204)
+async def delete_address(
+    address_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Address).where(
+            Address.id == address_id,
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+    )
+    address = result.scalar_one_or_none()
+    if not address:
+        raise HTTPException(status_code=404, detail=f"Address with id {address_id} not found")
+
+    count_result = await db.execute(
+        select(func.count()).select_from(Address).where(
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+    )
+    count = count_result.scalar()
+
+    # Simpan nilai is_default sebelum soft delete dan commit
+    was_default = address.is_default
+
+    address.is_deleted = True
+    address.deleted_at = datetime.now(timezone.utc)
+    await db.commit()
+
+    # Gunakan was_default, bukan address.is_default (yang sudah stale setelah commit)
+    if was_default and count > 1:
+        first_address_result = await db.execute(
+            select(Address).where(
+                Address.user_id == current_user.id,
+                Address.is_deleted == False
+            ).order_by(Address.created_at.asc()).limit(1)
+        )
+        first_address = first_address_result.scalar_one_or_none()
+        if first_address:
+            first_address.is_default = True
+            await db.commit()
+
+    return None
+
+# ==================== PATCH 3: set-default endpoint ====================
+@router.patch("/{address_id}/set-default", response_model=AddressResponse)
+async def set_default_address(
+    address_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Lock dan cari alamat target
+    result = await db.execute(
+        select(Address)
+        .where(
+            Address.id == address_id,
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+        .with_for_update()
+    )
+    target_address = result.scalar_one_or_none()
+    if not target_address:
+        raise HTTPException(status_code=404, detail="Address not found")
+
+    # Idempotent: jika sudah default, langsung return
+    if target_address.is_default:
+        await db.refresh(target_address)
+        return target_address
+
+    # Reset semua alamat user menjadi non-default menggunakan UPDATE langsung
+    await db.execute(
+        update(Address)
+        .where(
+            Address.user_id == current_user.id,
+            Address.is_deleted == False
+        )
+        .values(is_default=False)
+        .execution_options(synchronize_session="fetch")
+    )
+
+    # Set alamat target menjadi default
+    target_address.is_default = True
+    await db.commit()
+    await db.refresh(target_address)
+    return target_address
+
+
+========== D:\ecomerce-api\backend\app\routers\admin.py ==========
+# admin.py
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, and_
+from datetime import datetime, timezone
+from app.database import get_db
+from app.models import Order, OrderItem, Product, User
+from app.core.security import require_admin
+from app.models import User as UserModel
+
+router = APIRouter(tags=["admin"])
+
+@router.get("/dashboard")
+async def get_dashboard(
+    db: AsyncSession = Depends(get_db),
+    admin: UserModel = Depends(require_admin)
+):
+    # Hitung total produk aktif
+    total_products_result = await db.execute(
+        select(func.count()).select_from(Product).where(Product.is_deleted == False)
+    )
+    total_products = total_products_result.scalar() or 0
+
+    # Hitung total pesanan aktif (belum dihapus)
+    total_orders_result = await db.execute(
+        select(func.count()).select_from(Order).where(Order.is_deleted == False)
+    )
+    total_orders = total_orders_result.scalar() or 0
+
+    # Hitung total pendapatan dari pesanan berstatus paid
+    total_revenue_result = await db.execute(
+        select(func.sum(Order.total_price)).where(
+            Order.status == "paid",
+            Order.is_deleted == False
+        )
+    )
+    total_revenue = total_revenue_result.scalar() or 0
+
+    # Hitung total user aktif
+    total_users_result = await db.execute(
+        select(func.count()).select_from(User).where(User.is_deleted == False)
+    )
+    total_users = total_users_result.scalar() or 0
+
+    # Hitung jumlah pesanan per status
+    statuses = ["pending", "paid", "shipped", "delivered", "cancelled"]
+    orders_by_status = {}
+    for status in statuses:
+        count_result = await db.execute(
+            select(func.count()).select_from(Order).where(
+                Order.status == status,
+                Order.is_deleted == False
+            )
+        )
+        orders_by_status[status] = count_result.scalar() or 0
+
+    # Ambil 5 produk terlaris berdasarkan pesanan yang sudah paid
+    top_products_result = await db.execute(
+        select(
+            Product.id,
+            Product.product_name,
+            func.sum(OrderItem.quantity).label("total_sold")
+        )
+        .join(OrderItem, Product.id == OrderItem.product_id)
+        .join(Order, OrderItem.order_id == Order.id)
+        .where(Order.status == "paid", Order.is_deleted == False)
+        .group_by(Product.id, Product.product_name)
+        .order_by(func.sum(OrderItem.quantity).desc())
+        .limit(5)
+    )
+    top_products = [
+        {"id": row.id, "name": row.product_name, "total_sold": int(row.total_sold)}
+        for row in top_products_result
+    ]
+
+    # Hitung pendapatan per bulan untuk 6 bulan terakhir
+    now = datetime.now(timezone.utc)
+    revenue_by_month = []
+    for i in range(5, -1, -1):
+        target_month = now.month - i
+        target_year = now.year
+        if target_month <= 0:
+            target_month += 12
+            target_year -= 1
+        month_start = datetime(target_year, target_month, 1, tzinfo=timezone.utc)
+        if target_month == 12:
+            next_month_start = datetime(target_year + 1, 1, 1, tzinfo=timezone.utc)
+        else:
+            next_month_start = datetime(target_year, target_month + 1, 1, tzinfo=timezone.utc)
+        result = await db.execute(
+            select(func.sum(Order.total_price))
+            .where(
+                Order.status == "paid",
+                Order.is_deleted == False,
+                Order.created_at >= month_start,
+                Order.created_at < next_month_start
+            )
+        )
+        revenue = result.scalar() or 0
+        revenue_by_month.append({
+            "month": month_start.strftime("%B"),
+            "revenue": float(revenue)
+        })
+
+    return {
+        "total_products": total_products,
+        "total_orders": total_orders,
+        "total_revenue": float(total_revenue),
+        "total_users": total_users,
+        "orders_by_status": orders_by_status,
+        "top_products": top_products,
+        "revenue_by_month": revenue_by_month
+    }
+
+
+========== D:\ecomerce-api\backend\app\routers\auth.py ==========
+# auth.py
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, or_
+from datetime import datetime, timedelta, timezone
+import uuid
+from app.database import get_db
+from app.schemas import UserRegister, UserLogin, UserResponse, Token
+from app.services.auth_service import register_user, authenticate_user
+from app.core.security import create_access_token, create_refresh_token, get_current_user
+from app.models import RefreshToken, User
+from app.core.config import settings
+from app.core.limiter import limiter
+
+router = APIRouter(tags=["auth"])
+
+@router.post("/register", response_model=UserResponse, status_code=201)
+@limiter.limit("5/hour")
+async def register(request: Request, data: UserRegister, db: AsyncSession = Depends(get_db)):
+    # Registrasi user baru, cek email sudah terdaftar atau belum
+    user = await register_user(db, data.email, data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    return user
+
+@router.post("/login", response_model=Token)
+@limiter.limit("5/15minutes")
+async def login(request: Request, data: UserLogin, db: AsyncSession = Depends(get_db)):
+    # Autentikasi user berdasarkan email dan password
+    user = await authenticate_user(db, data.email, data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+
+    # Buat access token dan refresh token
+    access_token = create_access_token({"sub": str(user.id)})
+    refresh_token = create_refresh_token({"sub": str(user.id), "jti": str(uuid.uuid4())})
+
+    # Simpan refresh token ke database
+    db_refresh = RefreshToken(
+        user_id=user.id,
+        token=refresh_token,
+        expires_at=datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    )
+    db.add(db_refresh)
+    await db.commit()
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+@router.post("/refresh", response_model=Token)
+@limiter.limit("10/minute")
+async def refresh_token(
+    request: Request,
+    refresh_token: str,
+    db: AsyncSession = Depends(get_db)
+):
+    # Cari refresh token yang masih berlaku di database
+    result = await db.execute(
+        select(RefreshToken).where(
+            RefreshToken.token == refresh_token,
+            RefreshToken.expires_at > datetime.now(timezone.utc)
+        )
+    )
+    stored_token = result.scalar_one_or_none()
+    if not stored_token:
+        raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
+
+    # Jika token sudah dicabut, cabut semua token user (deteksi reuse)
+    if stored_token.revoked_at is not None:
+        await db.execute(
+            RefreshToken.__table__.update().where(
+                RefreshToken.user_id == stored_token.user_id,
+                RefreshToken.revoked_at == None
+            ).values(revoked_at=datetime.now(timezone.utc))
+        )
+        await db.commit()
+        raise HTTPException(status_code=401, detail="Token reuse detected. All sessions revoked.")
+
+    # Pastikan user masih aktif
+    user_result = await db.execute(select(User).where(User.id == stored_token.user_id))
+    user = user_result.scalar_one_or_none()
+    if not user or user.is_deleted:
+        raise HTTPException(status_code=401, detail="User not found or banned")
+
+    # Cabut token lama dan buat token baru (rotasi)
+    stored_token.revoked_at = datetime.now(timezone.utc)
+
+    new_refresh_token_str = create_refresh_token({"sub": str(user.id), "jti": str(uuid.uuid4())})
+    new_refresh_token = RefreshToken(
+        user_id=user.id,
+        token=new_refresh_token_str,
+        expires_at=datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    )
+    db.add(new_refresh_token)
+
+    access_token = create_access_token({"sub": str(user.id)})
+
+    await db.commit()
+
+    return {
+        "access_token": access_token,
+        "refresh_token": new_refresh_token_str,
+        "token_type": "bearer"
+    }
+
+@router.post("/logout", status_code=204)
+async def logout(
+    refresh_token: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cabut refresh token saat logout
+    result = await db.execute(
+        select(RefreshToken).where(
+            RefreshToken.token == refresh_token,
+            RefreshToken.user_id == current_user.id,
+            RefreshToken.revoked_at == None
+        )
+    )
+    stored_token = result.scalar_one_or_none()
+    if stored_token:
+        stored_token.revoked_at = datetime.now(timezone.utc)
+        
+        # Hapus token expired/revoked lama milik user ini (cleanup)
+        await db.execute(
+            RefreshToken.__table__.delete().where(
+                RefreshToken.user_id == current_user.id,
+                or_(
+                    RefreshToken.expires_at < datetime.now(timezone.utc),
+                    RefreshToken.revoked_at != None
+                )
+            )
+        )
+        await db.commit()
+
+    return None
+
+
+========== D:\ecomerce-api\backend\app\routers\carts.py ==========
+# === FILE: app/routers/carts.py ===
+# carts.py (LENGKAP - hanya update_cart_item yang berubah)
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from typing import List
+from app.database import get_db
+from app.models import Cart, Product, User
+from app.schemas import CartCreate, CartUpdate, CartResponse
+from app.core.security import get_current_user
+from app.utils.pagination import paginated_response
+from sqlalchemy.orm import selectinload
+
+router = APIRouter(tags=["carts"])
+
+@router.get("/", response_model=dict)
+async def get_cart(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Hitung total item keranjang user yang belum dihapus
+    total_result = await db.execute(
+        select(func.count()).select_from(Cart).where(
+            Cart.user_id == current_user.id,
+            Cart.is_deleted == False
+        )
+    )
+    total = total_result.scalar()
+
+    # Ambil item keranjang user dengan data produk terkait
+    result = await db.execute(
+        select(Cart)
+        .options(selectinload(Cart.product))
+        .where(
+            Cart.user_id == current_user.id,
+            Cart.is_deleted == False
+        )
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .order_by(Cart.created_at.desc())
+    )
+    cart_items = result.scalars().all()
+
+    # Bangun response dengan subtotal, filter produk yang sudah dihapus
+    response_items = []
+    for item in cart_items:
+        product = item.product
+        if not product or product.is_deleted:
+            continue
+        response_items.append({
+            "id": item.id,
+            "product_id": item.product_id,
+            "product_name": product.product_name,
+            "price": product.price,
+            "quantity": item.quantity,
+            "subtotal": product.price * item.quantity,
+            "product_image_url": product.image_url,
+            "created_at": item.created_at
+        })
+
+    return paginated_response(response_items, page, limit, total)
+
+@router.post("/", response_model=CartResponse, status_code=201)
+async def add_to_cart(
+    cart_item: CartCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Pastikan produk tersedia dan belum dihapus
+    product_result = await db.execute(
+        select(Product).where(
+            Product.id == cart_item.product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = product_result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
+
+    # Cek stok produk
+    if product.stock < cart_item.quantity:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Stok tidak mencukupi. Tersedia: {product.stock}"
+        )
+
+    # Cek apakah produk sudah ada di keranjang user
+    existing_result = await db.execute(
+        select(Cart).where(
+            Cart.user_id == current_user.id,
+            Cart.product_id == cart_item.product_id,
+            Cart.is_deleted == False
+        )
+    )
+    existing = existing_result.scalar_one_or_none()
+
+    if existing:
+        # Jika sudah ada, update quantity
+        new_quantity = existing.quantity + cart_item.quantity
+        if product.stock < new_quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Tidak dapat menambah {cart_item.quantity}. Maksimal tersedia: {product.stock - existing.quantity}"
+            )
+        existing.quantity = new_quantity
+        await db.commit()
+        await db.refresh(existing)
+        return existing
+    else:
+        # Jika belum ada, buat item baru
+        db_cart = Cart(
+            user_id=current_user.id,
+            product_id=cart_item.product_id,
+            quantity=cart_item.quantity
+        )
+        db.add(db_cart)
+        await db.commit()
+        await db.refresh(db_cart)
+        return db_cart
+
+@router.put("/{item_id}", response_model=CartResponse)
+async def update_cart_item(
+    item_id: int,
+    cart_update: CartUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Validasi jumlah minimal 1
+    if cart_update.quantity < 1:
+        raise HTTPException(status_code=400, detail="Jumlah minimal adalah 1")
+
+    # Cari item keranjang milik user
+    result = await db.execute(
+        select(Cart).where(
+            Cart.id == item_id,
+            Cart.user_id == current_user.id,
+            Cart.is_deleted == False
+        )
+    )
+    cart_item = result.scalar_one_or_none()
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Item keranjang tidak ditemukan")
+
+    # Cek stok produk sebelum update
+    # [FIX] Tambah .with_for_update() untuk mencegah race condition update stok bersamaan
+    product_result = await db.execute(
+        select(Product).where(Product.id == cart_item.product_id).with_for_update()
+    )
+    product = product_result.scalar_one_or_none()
+    # [FIX] Guard clause untuk produk yang sudah di-soft-delete
+    if not product or product.is_deleted:
+        raise HTTPException(status_code=400, detail="Produk sudah tidak tersedia atau telah dihapus")
+    if product and product.stock < cart_update.quantity:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Stok tidak mencukupi. Tersedia: {product.stock}"
+        )
+
+    # Update quantity
+    cart_item.quantity = cart_update.quantity
+    await db.commit()
+    await db.refresh(cart_item)
+    return cart_item
+
+@router.delete("/{item_id}", status_code=204)
+async def remove_from_cart(
+    item_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cari item keranjang milik user
+    result = await db.execute(
+        select(Cart).where(
+            Cart.id == item_id,
+            Cart.user_id == current_user.id,
+            Cart.is_deleted == False
+        )
+    )
+    cart_item = result.scalar_one_or_none()
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Item keranjang tidak ditemukan")
+
+    # Hapus permanen item keranjang
+    await db.delete(cart_item)
+    await db.commit()
+    return None
+
+
+========== D:\ecomerce-api\backend\app\routers\categories.py ==========
+# categories.py
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from typing import List
+from app.database import get_db
+from app.models import Category
+from app.schemas import CategoryCreate, CategoryResponse
+from app.core.security import require_admin
+from app.models import User
+from app.utils.pagination import paginated_response
+
+router = APIRouter(tags=["categories"])
+
+@router.get("/", response_model=dict)
+async def get_all_categories(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db)
+):
+    # Hitung total kategori yang belum dihapus
+    total_result = await db.execute(
+        select(func.count()).select_from(Category).where(Category.is_deleted == False)
+    )
+    total = total_result.scalar()
+    
+    # Ambil daftar kategori aktif
+    result = await db.execute(
+        select(Category)
+        .where(Category.is_deleted == False)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .order_by(Category.name)
+    )
+    categories = result.scalars().all()
+    # Convert to Pydantic schema before pagination
+    category_schemas = [CategoryResponse.model_validate(cat) for cat in categories]
+    return paginated_response(category_schemas, page, limit, total)
+
+@router.get("/{category_id}", response_model=CategoryResponse)
+async def get_category(
+    category_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    # Ambil detail kategori berdasarkan ID
+    result = await db.execute(
+        select(Category).where(
+            Category.id == category_id,
+            Category.is_deleted == False
+        )
+    )
+    category = result.scalar_one_or_none()
+    if not category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    return category
+
+@router.post("/", response_model=CategoryResponse, status_code=201)
+async def create_category(
+    category: CategoryCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    # Cek apakah slug kategori sudah dipakai
+    result = await db.execute(
+        select(Category).where(
+            Category.slug == category.slug,
+            Category.is_deleted == False
+        )
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category with this slug already exists")
+    
+    # Buat kategori baru
+    db_category = Category(name=category.name, slug=category.slug)
+    db.add(db_category)
+    await db.commit()
+    await db.refresh(db_category)
+    return db_category
+
+@router.put("/{category_id}", response_model=CategoryResponse)
+async def update_category(
+    category_id: int,
+    category_update: CategoryCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    # Cari kategori yang akan diupdate
+    result = await db.execute(
+        select(Category).where(
+            Category.id == category_id,
+            Category.is_deleted == False
+        )
+    )
+    category = result.scalar_one_or_none()
+    if not category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    # Jika mengganti slug, pastikan tidak bentrok dengan kategori lain
+    if category_update.slug != category.slug:
+        dup_result = await db.execute(
+            select(Category).where(
+                Category.slug == category_update.slug,
+                Category.id != category_id,
+                Category.is_deleted == False
+            )
+        )
+        if dup_result.scalar_one_or_none():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category with this slug already exists")
+    
+    # Update data kategori
+    category.name = category_update.name
+    category.slug = category_update.slug
+    await db.commit()
+    await db.refresh(category)
+    return category
+
+@router.delete("/{category_id}", status_code=204)
+async def delete_category(
+    category_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    # Soft delete kategori
+    result = await db.execute(
+        select(Category).where(
+            Category.id == category_id,
+            Category.is_deleted == False
+        )
+    )
+    category = result.scalar_one_or_none()
+    if not category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    category.is_deleted = True
+    await db.commit()
+    return None
+
+
+========== D:\ecomerce-api\backend\app\routers\orders.py ==========
+# orders.py (LENGKAP - DENGAN PERBAIKAN BUG begin_nested & DEAD CODE)
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
+from typing import List
+from datetime import datetime, timezone, timedelta
+from app.database import get_db
+from app.models import Order, OrderItem, Cart, Product, User, Payment, Voucher, VoucherUsage
+from app.schemas import OrderCreate, OrderResponse, OrderItemResponse, OrderWithPaymentResponse
+from app.core.security import get_current_user, require_admin
+from app.utils.pagination import paginated_response
+from app.core.enums import OrderStatus
+from app.services.xendit_service import xendit_service
+
+router = APIRouter(tags=["orders"])
+
+# ==================== HELPER FUNCTIONS ====================
+
+async def get_user_orders(
+    user_id: int,
+    page: int,
+    limit: int,
+    db: AsyncSession
+):
+    # Helper: hitung total pesanan user
+    total_result = await db.execute(
+        select(func.count()).select_from(Order).where(Order.user_id == user_id, Order.is_deleted == False)
+    )
+    total = total_result.scalar()
+
+    # Helper: ambil pesanan user dengan item dan produk terkait
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.user_id == user_id, Order.is_deleted == False)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .order_by(Order.created_at.desc())
+    )
+    orders = result.scalars().all()
+
+    # Helper: format response pesanan user
+    response_orders = []
+    for order in orders:
+        items_response = []
+        for item in order.items:
+            items_response.append({
+                "id": item.id,
+                "order_id": item.order_id,
+                "product_id": item.product_id,
+                "product_name": item.product.product_name if item.product else "Unknown",
+                "quantity": item.quantity,
+                "price_at_purchase": item.price_at_purchase,
+                "subtotal": item.price_at_purchase * item.quantity,
+                "created_at": item.created_at
+            })
+
+        total_val = float(order.total_price or 0.0)
+        discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+        final_price_val = max(0.0, total_val - discount_val)
+
+        response_orders.append({
+            "id": order.id,
+            "user_id": order.user_id,
+            "total_price": total_val,
+            "discount_amount": discount_val,
+            "final_price": final_price_val,
+            "status": order.status,
+            "created_at": order.created_at,
+            "shipping_address": order.shipping_address,
+            "items": items_response
+        })
+
+    return paginated_response(response_orders, page, limit, total)
+
+
+# ==================== ENDPOINTS ====================
+
+@router.post("/", response_model=OrderWithPaymentResponse, status_code=201)
+async def create_order(
+    order_data: OrderCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Ambil semua item keranjang user yang belum dihapus (dengan row lock untuk race condition)
+    cart_result = await db.execute(
+        select(Cart).where(
+            Cart.user_id == current_user.id,
+            Cart.is_deleted == False
+        ).with_for_update()
+    )
+    all_cart_items = cart_result.scalars().all()
+
+    if not all_cart_items:
+        raise HTTPException(status_code=400, detail="Cart is empty")
+
+    # Filter item keranjang yang dipilih untuk checkout
+    selected_cart_item_ids = set(order_data.cart_item_ids)
+    cart_items_to_process = [item for item in all_cart_items if item.id in selected_cart_item_ids]
+
+    if not cart_items_to_process:
+        raise HTTPException(status_code=400, detail="No items selected for checkout")
+
+    # Proses setiap item: validasi stok dan kurangi stok produk
+    order_items_data = []
+    total_price = 0
+
+    for item in cart_items_to_process:
+        product_result = await db.execute(
+            select(Product).where(
+                Product.id == item.product_id,
+                Product.is_deleted == False
+            ).with_for_update()
+        )
+        product = product_result.scalar_one_or_none()
+        if not product:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Product {item.product_id} not found or has been deleted"
+            )
+        if product.stock < item.quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Insufficient stock for product {product.product_name}"
+            )
+
+        product.stock -= item.quantity
+        subtotal = product.price * item.quantity
+        total_price += subtotal
+        order_items_data.append({
+            "cart_item_id": item.id,
+            "product_id": item.product_id,
+            "quantity": item.quantity,
+            "price_at_purchase": product.price,
+            "product_name": product.product_name
+        })
+
+    voucher = None
+    discount_amount = 0.0
+    if order_data.voucher_code:
+        now = datetime.now(timezone.utc)
+        voucher_result = await db.execute(
+            select(Voucher).where(
+                Voucher.code == order_data.voucher_code.upper(),
+                Voucher.is_active == True,
+                Voucher.start_date <= now,
+                Voucher.end_date >= now,
+                Voucher.used_count < Voucher.usage_limit
+            ).with_for_update()
+        )
+        voucher = voucher_result.scalar_one_or_none()
+        if not voucher:
+            raise HTTPException(status_code=400, detail="Invalid or expired voucher code")
+
+        if total_price < voucher.min_purchase:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Minimum purchase Rp{int(voucher.min_purchase):,} required"
+            )
+
+        user_usage_result = await db.execute(
+            select(func.count()).select_from(VoucherUsage).where(
+                VoucherUsage.user_id == current_user.id,
+                VoucherUsage.voucher_id == voucher.id
+            )
+        )
+        used_by_user = user_usage_result.scalar() or 0
+        if used_by_user >= voucher.usage_per_user:
+            raise HTTPException(status_code=400, detail="Voucher usage limit reached for this user")
+
+        if voucher.discount_type == "percentage":
+            discount_amount = total_price * voucher.discount_value / 100
+            if voucher.max_discount and discount_amount > voucher.max_discount:
+                discount_amount = voucher.max_discount
+        else:
+            discount_amount = min(voucher.discount_value, total_price)
+
+    db_order = Order(
+        user_id=current_user.id,
+        total_price=total_price,
+        status="pending",
+        shipping_address=order_data.shipping_address if order_data else None
+    )
+    if voucher:
+        db_order.applied_voucher_id = voucher.id
+        db_order.discount_amount = discount_amount
+
+    db.add(db_order)
+    await db.flush()
+
+    for item_data in order_items_data:
+        db_item = OrderItem(
+            order_id=db_order.id,
+            product_id=item_data["product_id"],
+            quantity=item_data["quantity"],
+            price_at_purchase=item_data["price_at_purchase"]
+        )
+        db.add(db_item)
+
+    for item in cart_items_to_process:
+        await db.delete(item)
+
+    await db.commit()
+    await db.refresh(db_order)
+
+    final_amount = total_price - discount_amount
+    if final_amount < 0:
+        final_amount = 0.0
+
+    external_id = f"ORDER-{db_order.id}"
+
+    try:
+        invoice_data = await xendit_service.create_invoice(
+            external_id=external_id,
+            amount=final_amount,
+            payer_email=current_user.email,
+            description=f"Payment for order #{db_order.id}"
+        )
+    except HTTPException as e:
+        for item_data in order_items_data:
+            product_result = await db.execute(
+                select(Product).where(Product.id == item_data["product_id"]).with_for_update()
+            )
+            product = product_result.scalar_one_or_none()
+            if product:
+                product.stock += item_data["quantity"]
+        db_order.status = "cancelled"
+        if voucher:
+            db_order.applied_voucher_id = None
+            db_order.discount_amount = 0.0
+            if voucher.used_count > 0:
+                voucher.used_count -= 1
+        await db.commit()
+        raise HTTPException(
+            status_code=502,
+            detail=f"Failed to create Xendit invoice: {e.detail}"
+        )
+
+    db_payment = Payment(
+        order_id=db_order.id,
+        method="xendit",
+        amount=final_amount,
+        status="pending",
+        payment_url=invoice_data.get("invoice_url"),
+        xendit_invoice_id=invoice_data.get("id"),
+        invoice_url=invoice_data.get("invoice_url")
+    )
+    db.add(db_payment)
+    await db.commit()
+
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.id == db_order.id)
+    )
+    order = result.scalar_one()
+
+    items_response = []
+    for item in order.items:
+        items_response.append({
+            "id": item.id,
+            "order_id": item.order_id,
+            "product_id": item.product_id,
+            "product_name": item.product.product_name if item.product else "Unknown",
+            "quantity": item.quantity,
+            "price_at_purchase": item.price_at_purchase,
+            "subtotal": item.price_at_purchase * item.quantity,
+            "created_at": item.created_at
+        })
+
+    total_val = float(order.total_price or 0.0)
+    discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+    final_price_val = max(0.0, total_val - discount_val)
+
+    return {
+        "id": order.id,
+        "user_id": order.user_id,
+        "total_price": total_val,
+        "discount_amount": discount_val,
+        "final_price": final_price_val,
+        "status": order.status,
+        "created_at": order.created_at,
+        "shipping_address": order.shipping_address,
+        "items": items_response,
+        "invoice_url": db_payment.invoice_url
+    }
+
+
+@router.get("/me", response_model=dict)
+async def get_my_orders(
+    page: int = 1,
+    limit: int = 10,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return await get_user_orders(current_user.id, page, limit, db)
+
+
+@router.get("/{order_id}", response_model=OrderResponse)
+async def get_order_by_id(
+    order_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Order).options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.id == order_id)
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.user_id != current_user.id and not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    items_response = []
+    for item in order.items:
+        items_response.append({
+            "id": item.id,
+            "order_id": item.order_id,
+            "product_id": item.product_id,
+            "product_name": item.product.product_name if item.product else "Unknown",
+            "quantity": item.quantity,
+            "price_at_purchase": item.price_at_purchase,
+            "subtotal": item.price_at_purchase * item.quantity,
+            "created_at": item.created_at
+        })
+
+    total_val = float(order.total_price or 0.0)
+    discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+    final_price_val = max(0.0, total_val - discount_val)
+
+    return {
+        "id": order.id,
+        "user_id": order.user_id,
+        "total_price": total_val,
+        "discount_amount": discount_val,
+        "final_price": final_price_val,
+        "status": order.status,
+        "created_at": order.created_at,
+        "shipping_address": order.shipping_address,
+        "items": items_response
+    }
+
+
+@router.get("/", response_model=dict)
+async def get_all_orders(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    total_result = await db.execute(
+        select(func.count()).select_from(Order).where(Order.is_deleted == False)
+    )
+    total = total_result.scalar()
+
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.is_deleted == False)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .order_by(Order.created_at.desc())
+    )
+    orders = result.scalars().all()
+
+    response_orders = []
+    for order in orders:
+        items_response = []
+        for item in order.items:
+            items_response.append({
+                "id": item.id,
+                "order_id": item.order_id,
+                "product_id": item.product_id,
+                "product_name": item.product.product_name if item.product else "Unknown",
+                "quantity": item.quantity,
+                "price_at_purchase": item.price_at_purchase,
+                "subtotal": item.price_at_purchase * item.quantity,
+                "created_at": item.created_at
+            })
+
+        total_val = float(order.total_price or 0.0)
+        discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+        final_price_val = max(0.0, total_val - discount_val)
+
+        response_orders.append({
+            "id": order.id,
+            "user_id": order.user_id,
+            "total_price": total_val,
+            "discount_amount": discount_val,
+            "final_price": final_price_val,
+            "status": order.status,
+            "created_at": order.created_at,
+            "shipping_address": order.shipping_address,
+            "items": items_response
+        })
+
+    return paginated_response(response_orders, page, limit, total)
+
+
+@router.patch("/{order_id}/status", response_model=OrderResponse)
+async def update_order_status(
+    order_id: int,
+    status: str,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    try:
+        status_enum = OrderStatus(status)
+    except ValueError:
+        raise HTTPException(400, f"Invalid status. Must be one of: {[s.value for s in OrderStatus]}")
+
+    ALLOWED_TRANSITIONS = {
+        "pending": ["paid", "cancelled"],
+        "paid": ["shipped", "cancelled"],
+        "shipped": ["delivered"],
+        "delivered": [],
+        "cancelled": []
+    }
+
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).with_for_update()
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(404, "Order not found")
+
+    old_status = order.status
+
+    if status == "cancelled" and old_status == "cancelled":
+        await db.refresh(order, attribute_names=["items"])
+        items_response = []
+        for item in order.items:
+            items_response.append({
+                "id": item.id,
+                "order_id": item.order_id,
+                "product_id": item.product_id,
+                "product_name": item.product.product_name if item.product else "Unknown",
+                "quantity": item.quantity,
+                "price_at_purchase": item.price_at_purchase,
+                "subtotal": item.price_at_purchase * item.quantity,
+                "created_at": item.created_at
+            })
+        total_val = float(order.total_price or 0.0)
+        discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+        final_price_val = max(0.0, total_val - discount_val)
+        return {
+            "id": order.id,
+            "user_id": order.user_id,
+            "total_price": total_val,
+            "discount_amount": discount_val,
+            "final_price": final_price_val,
+            "status": order.status,
+            "created_at": order.created_at,
+            "shipping_address": order.shipping_address,
+            "items": items_response
+        }
+
+    if status not in ALLOWED_TRANSITIONS.get(old_status, []):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot transition from '{old_status}' to '{status}'"
+        )
+
+    if status in ["shipped", "delivered"]:
+        payment_result = await db.execute(
+            select(Payment).where(Payment.order_id == order.id)
+        )
+        payment = payment_result.scalar_one_or_none()
+        if not payment or payment.status != "paid":
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot change status to shipped/delivered because payment is not confirmed"
+            )
+
+    if status == "cancelled" and old_status != "cancelled":
+        for item in order.items:
+            product_result = await db.execute(
+                select(Product).where(Product.id == item.product_id).with_for_update()
+            )
+            product = product_result.scalar_one_or_none()
+            if product:
+                product.stock += item.quantity
+
+        if order.applied_voucher_id is not None:
+            voucher_result = await db.execute(
+                select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+            )
+            voucher = voucher_result.scalar_one_or_none()
+            if voucher and voucher.used_count > 0:
+                voucher.used_count -= 1
+            order.applied_voucher_id = None
+            order.discount_amount = 0.0
+
+    order.status = status
+    await db.commit()
+    await db.refresh(order)
+
+    items_response = []
+    for item in order.items:
+        items_response.append({
+            "id": item.id,
+            "order_id": item.order_id,
+            "product_id": item.product_id,
+            "product_name": item.product.product_name if item.product else "Unknown",
+            "quantity": item.quantity,
+            "price_at_purchase": item.price_at_purchase,
+            "subtotal": item.price_at_purchase * item.quantity,
+            "created_at": item.created_at
+        })
+
+    total_val = float(order.total_price or 0.0)
+    discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+    final_price_val = max(0.0, total_val - discount_val)
+
+    return {
+        "id": order.id,
+        "user_id": order.user_id,
+        "total_price": total_val,
+        "discount_amount": discount_val,
+        "final_price": final_price_val,
+        "status": order.status,
+        "created_at": order.created_at,
+        "shipping_address": order.shipping_address,
+        "items": items_response
+    }
+
+
+@router.patch("/{order_id}/user-cancel", response_model=OrderResponse)
+async def user_cancel_order(
+    order_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))
+        .where(Order.id == order_id)
+        .with_for_update()
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    if order.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    if order.status != "pending":
+        raise HTTPException(status_code=400, detail="Only pending orders can be cancelled")
+
+    for item in order.items:
+        product_result = await db.execute(
+            select(Product).where(Product.id == item.product_id).with_for_update()
+        )
+        product = product_result.scalar_one_or_none()
+        if product:
+            product.stock += item.quantity
+
+    if order.applied_voucher_id is not None:
+        voucher_result = await db.execute(
+            select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+        )
+        voucher = voucher_result.scalar_one_or_none()
+        if voucher and voucher.used_count > 0:
+            voucher.used_count -= 1
+        order.applied_voucher_id = None
+        order.discount_amount = 0.0
+
+    order.status = "cancelled"
+    await db.commit()
+    await db.refresh(order)
+
+    items_response = []
+    for item in order.items:
+        items_response.append({
+            "id": item.id,
+            "order_id": item.order_id,
+            "product_id": item.product_id,
+            "product_name": item.product.product_name if item.product else "Unknown",
+            "quantity": item.quantity,
+            "price_at_purchase": item.price_at_purchase,
+            "subtotal": item.price_at_purchase * item.quantity,
+            "created_at": item.created_at
+        })
+
+    total_val = float(order.total_price or 0.0)
+    discount_val = float(order.discount_amount if order.discount_amount is not None else 0.0)
+    final_price_val = max(0.0, total_val - discount_val)
+
+    return {
+        "id": order.id,
+        "user_id": order.user_id,
+        "total_price": total_val,
+        "discount_amount": discount_val,
+        "final_price": final_price_val,
+        "status": order.status,
+        "created_at": order.created_at,
+        "shipping_address": order.shipping_address,
+        "items": items_response
+    }
+
+
+# ==================== BACKGROUND TASK ====================
+
+async def auto_cancel_expired_orders(db: AsyncSession) -> int:
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
+    result = await db.execute(
+        select(Order)
+        .options(selectinload(Order.items))
+        .where(
+            Order.status == "pending",
+            Order.created_at < cutoff,
+            Order.is_deleted == False
+        )
+    )
+    orders = result.scalars().all()
+    if not orders:
+        return 0
+
+    for order in orders:
+        for item in order.items:
+            product_result = await db.execute(
+                select(Product).where(Product.id == item.product_id).with_for_update()
+            )
+            product = product_result.scalar_one_or_none()
+            if product:
+                product.stock += item.quantity
+
+        if order.applied_voucher_id is not None:
+            voucher_result = await db.execute(
+                select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+            )
+            voucher = voucher_result.scalar_one_or_none()
+            if voucher and voucher.used_count > 0:
+                voucher.used_count -= 1
+            order.applied_voucher_id = None
+            order.discount_amount = 0.0
+
+        order.status = "cancelled"
+
+    await db.commit()
+    return len(orders)
+
+
+========== D:\ecomerce-api\backend\app\routers\payments.py ==========
+# payments.py
+import uuid
+import json
+from decimal import Decimal
+from datetime import datetime, timezone
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from app.database import get_db
+from app.models import Payment, Order, User, Voucher, VoucherUsage, UserVoucher
+from app.schemas import PaymentCreate, PaymentResponse
+from app.core.security import get_current_user, require_admin
+from app.core.config import settings
+from app.services.xendit_service import xendit_service
+
+router = APIRouter(tags=["payments"])
+
+# ==================== ENDPOINT LAMA ====================
+
+@router.post("/", response_model=PaymentResponse, status_code=201)
+async def create_payment(
+    payment_data: PaymentCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Membuat payment record secara manual (untuk metode pembayaran non-Xendit).
+    """
+    # Cek apakah order milik user dan masih ada
+    order_result = await db.execute(
+        select(Order).where(
+            Order.id == payment_data.order_id,
+            Order.user_id == current_user.id
+        )
+    )
+    order = order_result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    # Pastikan belum ada payment untuk order ini
+    existing_result = await db.execute(
+        select(Payment).where(Payment.order_id == payment_data.order_id)
+    )
+    existing = existing_result.scalar_one_or_none()
+    if existing:
+        raise HTTPException(status_code=400, detail="Payment already exists for this order")
+
+    # Buat URL pembayaran dummy (mock)
+    mock_payment_url = f"https://mock-payment.example.com/pay/{uuid.uuid4().hex}"
+
+    # Buat record payment
+    db_payment = Payment(
+        order_id=payment_data.order_id,
+        method=payment_data.method,
+        amount=order.total_price,
+        status="pending",
+        payment_url=mock_payment_url
+    )
+    db.add(db_payment)
+    await db.commit()
+    await db.refresh(db_payment)
+    return db_payment
+
+
+@router.get("/order/{order_id}", response_model=PaymentResponse)
+async def get_payment_by_order(
+    order_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Mendapatkan payment berdasarkan order_id.
+    """
+    # Cari payment berdasarkan order
+    result = await db.execute(
+        select(Payment).where(Payment.order_id == order_id)
+    )
+    payment = result.scalar_one_or_none()
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    # Validasi akses: hanya pemilik order atau admin
+    order_result = await db.execute(select(Order).where(Order.id == order_id))
+    order = order_result.scalar_one_or_none()
+    if order.user_id != current_user.id and not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    return payment
+
+
+@router.patch("/{payment_id}/confirm", response_model=PaymentResponse)
+async def confirm_payment(
+    payment_id: int,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    """
+    (Admin) Konfirmasi pembayaran secara manual, sekaligus mengaktifkan voucher jika ada.
+    """
+    # Row lock untuk payment dan order
+    payment_result = await db.execute(
+        select(Payment).where(Payment.id == payment_id).with_for_update()
+    )
+    payment = payment_result.scalar_one_or_none()
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    if payment.status == "paid":
+        raise HTTPException(status_code=400, detail="Payment already confirmed")
+
+    # Lock order
+    order_result = await db.execute(
+        select(Order).where(Order.id == payment.order_id).with_for_update()
+    )
+    order = order_result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    if order.status != "pending":
+        raise HTTPException(status_code=400, detail="Order is not pending")
+
+    # Jika order memiliki voucher applied, proses voucher
+    if order.applied_voucher_id is not None:
+        voucher_result = await db.execute(
+            select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+        )
+        voucher = voucher_result.scalar_one_or_none()
+        if not voucher:
+            raise HTTPException(status_code=400, detail="Voucher not found")
+
+        # Update used_count
+        voucher.used_count += 1
+
+        # Buat VoucherUsage record
+        db_usage = VoucherUsage(
+            voucher_id=voucher.id,
+            user_id=order.user_id,
+            order_id=order.id,
+            discount_amount=order.discount_amount
+        )
+        db.add(db_usage)
+
+        # Update user_voucher jika ada
+        user_voucher_result = await db.execute(
+            select(UserVoucher).where(
+                UserVoucher.user_id == order.user_id,
+                UserVoucher.voucher_id == voucher.id,
+                UserVoucher.is_used == False
+            )
+        )
+        user_voucher = user_voucher_result.scalar_one_or_none()
+        if user_voucher:
+            user_voucher.is_used = True
+            user_voucher.used_at = datetime.now(timezone.utc)
+
+    # Konfirmasi payment
+    payment.status = "paid"
+    payment.paid_at = datetime.now(timezone.utc)
+
+    # Update order status
+    order.status = "paid"
+
+    await db.commit()
+    await db.refresh(payment)
+    return payment
+
+
+# ==================== WEBHOOK XENDIT ====================
+
+@router.post("/xendit/webhook")
+async def xendit_webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Endpoint webhook untuk menerima notifikasi dari Xendit setelah pembayaran.
+    - Verifikasi signature HMAC (prioritas) atau x-callback-token (fallback).
+    - Hanya memproses event INVOICE.PAID.
+    - Idempotent: jika payment sudah paid, langsung return.
+    - Update status order dan payment, serta tandai voucher terpakai.
+    - Stok produk tidak dikurangi karena sudah dilakukan saat checkout.
+    """
+    # 1. Ambil raw body untuk signature verification
+    body = await request.body()
+    
+    # 2. Verifikasi signature HMAC jika ada (prioritas tinggi)
+    signature_header = request.headers.get("xendit-webhook-signature")
+    valid_signature = False
+    if signature_header:
+        valid_signature = xendit_service.verify_webhook_signature(body, signature_header)
+    
+    # 3. Fallback: verifikasi token jika signature tidak ada atau tidak valid
+    callback_token = request.headers.get("x-callback-token")
+    valid_token = callback_token and xendit_service.verify_webhook_token(callback_token)
+    
+    if not valid_signature and not valid_token:
+        raise HTTPException(status_code=401, detail="Invalid webhook authentication")
+
+    # 4. Baca payload
+    try:
+        payload = await request.json()
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid JSON payload")
+
+    # 5. Ekstrak data â€” Xendit kirim di root payload, bukan di dalam "data"
+    invoice_id = payload.get("id")
+    external_id = payload.get("external_id")
+    status_xendit = payload.get("status")
+
+    if status_xendit != "PAID":
+        return {"status": "ignored", "reason": "not paid"}
+
+    if not invoice_id or not external_id:
+        raise HTTPException(status_code=400, detail="Missing invoice_id or external_id")
+
+    # 6. Idempotency: cari payment berdasarkan xendit_invoice_id
+    payment_result = await db.execute(
+        select(Payment).where(Payment.xendit_invoice_id == invoice_id).with_for_update()
+    )
+    payment = payment_result.scalar_one_or_none()
+    if not payment:
+        # Invoice tidak ditemukan di sistem
+        return {"status": "ignored", "reason": "payment record not found"}
+
+    if payment.status == "paid":
+        # Sudah diproses sebelumnya
+        return {"status": "already_paid"}
+
+    # [FIX] Validasi nominal pembayaran dari webhook menggunakan Decimal dengan toleransi
+    webhook_amount = payload.get("amount")
+    if webhook_amount is not None:
+        # Konversi ke Decimal untuk perbandingan yang akurat
+        webhook_decimal = Decimal(str(webhook_amount))
+        payment_decimal = Decimal(str(payment.amount))
+        # Toleransi maksimal 1 sen (0.01)
+        if abs(webhook_decimal - payment_decimal) > Decimal("0.01"):
+            print(f"[WARNING] Xendit webhook amount mismatch: invoice {invoice_id}, expected {payment.amount}, got {webhook_amount}")
+            return {"status": "amount_mismatch", "reason": f"Expected {payment.amount}, got {webhook_amount}"}
+
+    # 7. Dapatkan order terkait
+    order_result = await db.execute(
+        select(Order).where(Order.id == payment.order_id).with_for_update()
+    )
+    order = order_result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    # [FIX] Tolak webhook jika status order sudah tidak pending (Cancelled/Paid/dll)
+    if order.status != "pending":
+        print(f"[WARNING] Webhook untuk order {order.id} diabaikan karena status saat ini: {order.status}")
+        return {"status": "ignored", "reason": f"Order status is {order.status}"}
+
+    # [FIX] Hapus dead code `if order.status == "paid"` karena sudah ditangani di atas
+
+    # 8. Proses voucher jika ada
+    if order.applied_voucher_id is not None:
+        voucher_result = await db.execute(
+            select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
+        )
+        voucher = voucher_result.scalar_one_or_none()
+        if voucher:
+            # Tambah used_count
+            voucher.used_count += 1
+
+            # Buat VoucherUsage jika belum ada
+            usage_result = await db.execute(
+                select(VoucherUsage).where(VoucherUsage.order_id == order.id)
+            )
+            existing_usage = usage_result.scalar_one_or_none()
+            if not existing_usage:
+                db_usage = VoucherUsage(
+                    voucher_id=voucher.id,
+                    user_id=order.user_id,
+                    order_id=order.id,
+                    discount_amount=order.discount_amount
+                )
+                db.add(db_usage)
+
+            # Update user_voucher
+            user_voucher_result = await db.execute(
+                select(UserVoucher).where(
+                    UserVoucher.user_id == order.user_id,
+                    UserVoucher.voucher_id == voucher.id,
+                    UserVoucher.is_used == False
+                )
+            )
+            user_voucher = user_voucher_result.scalar_one_or_none()
+            if user_voucher:
+                user_voucher.is_used = True
+                user_voucher.used_at = datetime.now(timezone.utc)
+
+    # 9. Ubah status
+    order.status = "paid"
+    payment.status = "paid"
+    payment.paid_at = datetime.now(timezone.utc)
+
+    await db.commit()
+    return {"status": "success"}
+
+
+========== D:\ecomerce-api\backend\app\routers\products.py ==========
+# products.py
+
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, or_
+from typing import List, Optional
+from app.database import get_db
+from app.models import Product, Category
+from app.schemas import ProductCreate, ProductResponse
+from app.core.security import require_admin
+from app.models import User
+from app.utils.uploader import upload_image
+from app.utils.pagination import paginated_response
+
+router = APIRouter(tags=["products"])
+
+# Create product (admin only)
+@router.post("/", response_model=ProductResponse, status_code=201)
+async def create_product(
+    product: ProductCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    if product.category_id is not None:
+        cat_result = await db.execute(
+            select(Category).where(
+                Category.id == product.category_id,
+                Category.is_deleted == False
+            )
+        )
+        if not cat_result.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Category not found or deleted")
+
+    db_product = Product(
+        product_name=product.product_name,
+        price=product.price,
+        stock=product.stock,
+        image_url=product.image_url,
+        description=product.description,
+        category_id=product.category_id
+    )
+    db.add(db_product)
+    await db.commit()
+    await db.refresh(db_product)
+    return db_product
+
+# Get all products with search & filter (public, only active products)
+@router.get("/", response_model=dict)
+async def get_all_products(
+    page: int = 1,
+    limit: int = 20,
+    q: Optional[str] = None,
+    category_id: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    db: AsyncSession = Depends(get_db)
+):
+    total_query = select(func.count()).select_from(Product).where(Product.is_deleted == False)
+    if q:
+        total_query = total_query.where(Product.product_name.ilike(f"%{q}%"))
+    if category_id:
+        total_query = total_query.where(Product.category_id == category_id)
+    if min_price is not None:
+        total_query = total_query.where(Product.price >= min_price)
+    if max_price is not None:
+        total_query = total_query.where(Product.price <= max_price)
+
+    total_result = await db.execute(total_query)
+    total = total_result.scalar() or 0
+
+    query = select(Product).where(Product.is_deleted == False)
+    if q:
+        query = query.where(Product.product_name.ilike(f"%{q}%"))
+    if category_id:
+        query = query.where(Product.category_id == category_id)
+    if min_price is not None:
+        query = query.where(Product.price >= min_price)
+    if max_price is not None:
+        query = query.where(Product.price <= max_price)
+
+    offset = (page - 1) * limit
+    result = await db.execute(
+        query.offset(offset).limit(limit).order_by(Product.id)
+    )
+    products = result.scalars().all()
+
+    product_schemas = [ProductResponse.model_validate(p) for p in products]
+    return paginated_response(product_schemas, page, limit, total)
+
+# Admin endpoint to get all products (including soft-deleted)
+@router.get("/admin/all", response_model=dict)
+async def get_all_products_admin(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Hitung total semua produk (termasuk yang soft-deleted)
+    total_result = await db.execute(select(func.count()).select_from(Product))
+    total = total_result.scalar() or 0
+
+    # Ambil semua produk tanpa filter is_deleted
+    offset = (page - 1) * limit
+    result = await db.execute(
+        select(Product)
+        .offset(offset)
+        .limit(limit)
+        .order_by(Product.id)
+    )
+    products = result.scalars().all()
+
+    product_schemas = [ProductResponse.model_validate(p) for p in products]
+    return paginated_response(product_schemas, page, limit, total)
+
+# Upload product image (admin only)
+@router.post("/upload-image", status_code=201)
+async def upload_product_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(require_admin)
+):
+    url = await upload_image(file)
+    return {"image_url": url}
+
+# Get product by id (public)
+@router.get("/{product_id}", response_model=ProductResponse)
+async def get_product(
+    product_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+        select(Product).where(
+            Product.id == product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Product with id {product_id} not found"
+        )
+    return product
+
+# Update product (admin only)
+@router.put("/{product_id}", response_model=ProductResponse)
+async def update_product(
+    product_id: int,
+    product_update: ProductCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    result = await db.execute(
+        select(Product).where(
+            Product.id == product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Product with id {product_id} not found"
+        )
+
+    if product_update.category_id is not None:
+        cat_result = await db.execute(
+            select(Category).where(
+                Category.id == product_update.category_id,
+                Category.is_deleted == False
+            )
+        )
+        if not cat_result.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Category not found or deleted")
+
+    product.product_name = product_update.product_name
+    product.price = product_update.price
+    product.stock = product_update.stock
+    product.image_url = product_update.image_url
+    product.description = product_update.description
+    product.category_id = product_update.category_id
+
+    await db.commit()
+    await db.refresh(product)
+    return product
+
+# Delete product (soft delete, admin only)
+@router.delete("/{product_id}", status_code=204)
+async def delete_product(
+    product_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin)
+):
+    result = await db.execute(
+        select(Product).where(
+            Product.id == product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Product with id {product_id} not found"
+        )
+
+    product.is_deleted = True
+    await db.commit()
+    return None
+
+
+========== D:\ecomerce-api\backend\app\routers\reviews.py ==========
+# reviews.py
+
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, and_, update
+from typing import List, Optional
+from datetime import datetime, timezone
+from app.database import get_db
+from app.models import Review, Product, Order, OrderItem, User
+from app.schemas import ReviewCreate, ReviewUpdate, ReviewResponse
+from app.core.security import get_current_user, require_admin
+
+router = APIRouter(tags=["reviews"])
+
+async def update_product_rating(db: AsyncSession, product_id: int):
+    """Hitung ulang average_rating dan total_reviews untuk suatu produk"""
+    # Hitung rata-rata rating dan total review produk
+    result = await db.execute(
+        select(func.avg(Review.rating), func.count(Review.id))
+        .where(Review.product_id == product_id, Review.is_deleted == False)
+    )
+    avg_rating, total_reviews = result.first()
+    
+    # Update field rating di tabel produk
+    await db.execute(
+        update(Product)
+        .where(Product.id == product_id)
+        .values(
+            average_rating=round(float(avg_rating), 1) if avg_rating else 0.0,
+            total_reviews=total_reviews or 0
+        )
+    )
+# ==================== USER ENDPOINTS ====================
+
+# Get reviews for a product
+@router.get("/product/{product_id}", response_model=List[ReviewResponse])
+async def get_product_reviews(
+    product_id: int,
+    skip: int = 0,
+    limit: int = 50,
+    db: AsyncSession = Depends(get_db)
+):
+    # Cek produk ada
+    product_result = await db.execute(
+        select(Product).where(
+            Product.id == product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = product_result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Ambil reviews produk
+    result = await db.execute(
+        select(Review)
+        .where(Review.product_id == product_id, Review.is_deleted == False)
+        .offset(skip)
+        .limit(limit)
+        .order_by(Review.created_at.desc())
+    )
+    reviews = result.scalars().all()
+    
+    # Ambil nama user untuk setiap review
+    response_reviews = []
+    for review in reviews:
+        user_result = await db.execute(
+            select(User).where(User.id == review.user_id)
+        )
+        user = user_result.scalar_one_or_none()
+        response_reviews.append({
+            "id": review.id,
+            "user_id": review.user_id,
+            "user_name": user.email.split('@')[0] if user else "Unknown",
+            "product_id": review.product_id,
+            "rating": review.rating,
+            "comment": review.comment,
+            "created_at": review.created_at,
+            "updated_at": review.updated_at
+        })
+    
+    return response_reviews
+
+# Get product average rating
+@router.get("/product/{product_id}/average")
+async def get_product_average_rating(
+    product_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    # Hitung rata-rata rating langsung dari review
+    result = await db.execute(
+        select(func.avg(Review.rating), func.count(Review.id))
+        .where(Review.product_id == product_id, Review.is_deleted == False)
+    )
+    avg_rating, total_reviews = result.first()
+    
+    return {
+        "product_id": product_id,
+        "average_rating": round(float(avg_rating), 1) if avg_rating else 0,
+        "total_reviews": total_reviews or 0
+    }
+
+# Create review (user must have purchased the product)
+@router.post("/", response_model=ReviewResponse, status_code=201)
+async def create_review(
+    review_data: ReviewCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cek apakah user pernah membeli produk ini (hanya order yang sudah dibayar)
+    order_result = await db.execute(
+        select(OrderItem).join(Order).where(
+            Order.user_id == current_user.id,
+            OrderItem.product_id == review_data.product_id,
+            Order.status == "paid"
+        )
+    )
+    has_purchased = order_result.scalar_one_or_none()
+    if not has_purchased:
+        raise HTTPException(
+            status_code=403,
+            detail="You can only review products you have purchased"
+        )
+    # Tambahkan ini sebelum cek existing review
+    product_result = await db.execute(
+        select(Product).where(Product.id == review_data.product_id, Product.is_deleted == False)
+    )
+    if not product_result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Cek apakah user sudah pernah review produk ini
+    existing_result = await db.execute(
+        select(Review).where(
+            Review.user_id == current_user.id,
+            Review.product_id == review_data.product_id,
+            Review.is_deleted == False
+        )
+    )
+    existing = existing_result.scalar_one_or_none()
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail="You have already reviewed this product"
+        )
+    
+    # Buat review baru
+    db_review = Review(
+        user_id=current_user.id,
+        product_id=review_data.product_id,
+        rating=review_data.rating,
+        comment=review_data.comment
+    )
+    db.add(db_review)
+    await db.flush()  # agar product_id tersedia
+    await update_product_rating(db, review_data.product_id)
+    await db.commit()
+    
+    return {
+        "id": db_review.id,
+        "user_id": db_review.user_id,
+        "user_name": current_user.email.split('@')[0],
+        "product_id": db_review.product_id,
+        "rating": db_review.rating,
+        "comment": db_review.comment,
+        "created_at": db_review.created_at,
+        "updated_at": db_review.updated_at
+    }
+
+# Update own review
+@router.put("/{review_id}", response_model=ReviewResponse)
+async def update_review(
+    review_id: int,
+    review_update: ReviewUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cari review milik user
+    result = await db.execute(
+        select(Review).where(
+            Review.id == review_id,
+            Review.user_id == current_user.id,
+            Review.is_deleted == False
+        )
+    )
+    review = result.scalar_one_or_none()
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    
+    # Update rating/komentar
+    if review_update.rating is not None:
+        review.rating = review_update.rating
+    if review_update.comment is not None:
+        review.comment = review_update.comment
+    
+    review.updated_at = datetime.now(timezone.utc)
+    
+# setelah update atribut review
+    await db.flush()
+    await update_product_rating(db, review.product_id)
+    await db.commit()
+    
+    user_result = await db.execute(select(User).where(User.id == review.user_id))
+    user = user_result.scalar_one_or_none()
+    
+    return {
+        "id": review.id,
+        "user_id": review.user_id,
+        "user_name": user.email.split('@')[0] if user else "Unknown",
+        "product_id": review.product_id,
+        "rating": review.rating,
+        "comment": review.comment,
+        "created_at": review.created_at,
+        "updated_at": review.updated_at
+    }
+
+# Delete own review (soft delete)
+@router.delete("/{review_id}", status_code=204)
+async def delete_review(
+    review_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Soft delete review milik user
+    result = await db.execute(
+        select(Review).where(
+            Review.id == review_id,
+            Review.user_id == current_user.id,
+            Review.is_deleted == False
+        )
+    )
+    review = result.scalar_one_or_none()
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    
+    review.is_deleted = True
+    await db.flush()
+    await update_product_rating(db, review.product_id)
+    await db.commit()
+
+# ==================== ADMIN ENDPOINTS ====================
+
+# Delete any review (admin only)
+@router.delete("/admin/{review_id}", status_code=204)
+async def admin_delete_review(
+    review_id: int,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin: soft delete review siapa pun
+    result = await db.execute(
+        select(Review).where(
+            Review.id == review_id,
+            Review.is_deleted == False
+        )
+    )
+    review = result.scalar_one_or_none()
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    
+    review.is_deleted = True
+    await db.flush()
+    await update_product_rating(db, review.product_id)
+    await db.commit()
+
+
+========== D:\ecomerce-api\backend\app\routers\users.py ==========
+# users.py
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from typing import List
+from app.database import get_db
+from app.models import User, Order
+from app.schemas import UserResponse, UserUpdate
+from app.core.security import get_current_user, require_admin
+from app.utils.pagination import paginated_response
+
+router = APIRouter(tags=["users"])
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_profile(
+    current_user: User = Depends(get_current_user)
+):
+    return current_user
+
+@router.put("/me", response_model=UserResponse)
+async def update_current_user(
+    user_update: UserUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Update profil user yang sedang login
+    if user_update.name is not None:
+        current_user.name = user_update.name
+    if user_update.phone is not None:
+        current_user.phone = user_update.phone
+    
+    await db.commit()
+    await db.refresh(current_user)
+    return current_user
+
+@router.get("/me/orders", response_model=dict)
+async def get_current_user_orders(
+    page: int = 1,
+    limit: int = 10,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Ambil riwayat pesanan user yang sedang login (delegasi ke orders router)
+    from app.routers.orders import get_user_orders
+    return await get_user_orders(current_user.id, page, limit, db)
+
+@router.get("/", response_model=dict)
+async def get_all_users(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin: hitung total user
+    total_result = await db.execute(select(func.count()).select_from(User))
+    total = total_result.scalar()
+    
+    # Admin: ambil daftar semua user
+    result = await db.execute(
+        select(User)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .order_by(User.id)
+    )
+    users = result.scalars().all()
+    user_schemas = [UserResponse.model_validate(user) for user in users]
+    return paginated_response(user_schemas, page, limit, total)
+
+@router.get("/{user_id}", response_model=UserResponse)
+async def get_user_by_id(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin: ambil detail user berdasarkan ID
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@router.patch("/{user_id}/ban", response_model=UserResponse)
+async def ban_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin tidak bisa ban diri sendiri
+    if user_id == admin.id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You cannot ban yourself")
+    
+    # Ban/unban user (soft delete toggle)
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.is_deleted = not user.is_deleted
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
+========== D:\ecomerce-api\backend\app\routers\vouchers.py ==========
+# vouchers.py (LENGKAP - DENGAN PERBAIKAN FINAL: NONAKTIFKAN ENDPOINT USANG)
+
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, and_
+from typing import List, Optional
+from datetime import datetime, timezone
+from app.database import get_db
+from app.models import Voucher, UserVoucher, VoucherUsage, Order, User
+from app.schemas import (
+    VoucherCreate, VoucherUpdate, VoucherResponse,
+    UserVoucherResponse, ApplyVoucher
+)
+from app.core.security import get_current_user, require_admin
+
+router = APIRouter(tags=["vouchers"])
+
+# ==================== ADMIN ENDPOINTS ====================
+
+@router.post("/admin", response_model=VoucherResponse, status_code=201)
+async def create_voucher(
+    voucher_data: VoucherCreate,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Cek apakah kode voucher sudah ada
+    result = await db.execute(
+        select(Voucher).where(Voucher.code == voucher_data.code.upper())
+    )
+    existing = result.scalar_one_or_none()
+    if existing:
+        raise HTTPException(status_code=400, detail="Voucher code already exists")
+    
+    # Buat voucher baru
+    db_voucher = Voucher(
+        code=voucher_data.code.upper(),
+        name=voucher_data.name,
+        description=voucher_data.description,
+        discount_type=voucher_data.discount_type,
+        discount_value=voucher_data.discount_value,
+        min_purchase=voucher_data.min_purchase,
+        max_discount=voucher_data.max_discount,
+        usage_limit=voucher_data.usage_limit,
+        usage_per_user=voucher_data.usage_per_user,
+        start_date=voucher_data.start_date,
+        end_date=voucher_data.end_date
+    )
+    db.add(db_voucher)
+    await db.commit()
+    await db.refresh(db_voucher)
+    return db_voucher
+
+@router.get("/admin", response_model=List[VoucherResponse])
+async def get_all_vouchers(
+    skip: int = 0,
+    limit: int = 100,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin: ambil semua voucher
+    result = await db.execute(
+        select(Voucher).offset(skip).limit(limit).order_by(Voucher.id.desc())
+    )
+    vouchers = result.scalars().all()
+    return vouchers
+
+@router.put("/admin/{voucher_id}", response_model=VoucherResponse)
+async def update_voucher(
+    voucher_id: int,
+    voucher_update: VoucherUpdate,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin: update voucher
+    result = await db.execute(select(Voucher).where(Voucher.id == voucher_id))
+    voucher = result.scalar_one_or_none()
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    
+    update_data = voucher_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(voucher, key, value)
+    
+    await db.commit()
+    await db.refresh(voucher)
+    return voucher
+
+@router.delete("/admin/{voucher_id}", status_code=204)
+async def delete_voucher(
+    voucher_id: int,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin)
+):
+    # Admin: hapus voucher permanen
+    result = await db.execute(select(Voucher).where(Voucher.id == voucher_id))
+    voucher = result.scalar_one_or_none()
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    
+    await db.delete(voucher)
+    await db.commit()
+    return None
+
+# ==================== USER ENDPOINTS ====================
+
+@router.get("/available", response_model=List[VoucherResponse])
+async def get_available_vouchers(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cari voucher yang aktif secara global (belum kadaluarsa, masih ada kuota)
+    now = datetime.now(timezone.utc)
+    result = await db.execute(
+        select(Voucher).where(
+            Voucher.is_active == True,
+            Voucher.start_date <= now,
+            Voucher.end_date >= now,
+            Voucher.used_count < Voucher.usage_limit
+        ).order_by(Voucher.end_date)
+    )
+    vouchers = result.scalars().all()
+    
+    # Filter voucher yang belum melebihi batas penggunaan per user
+    available = []
+    for voucher in vouchers:
+        user_usage = await db.execute(
+            select(func.count()).select_from(UserVoucher).where(
+                UserVoucher.user_id == current_user.id,
+                UserVoucher.voucher_id == voucher.id,
+                UserVoucher.is_used == True
+            )
+        )
+        used_by_user = user_usage.scalar() or 0
+        if used_by_user < voucher.usage_per_user:
+            available.append(voucher)
+    
+    return available
+
+@router.post("/{voucher_id}/claim", response_model=UserVoucherResponse)
+async def claim_voucher(
+    voucher_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cek ketersediaan voucher (aktif, belum kadaluarsa, masih ada kuota)
+    now = datetime.now(timezone.utc)
+    # [FIX] Tambah .with_for_update() untuk mencegah race condition overclaim
+    result = await db.execute(
+        select(Voucher).where(
+            Voucher.id == voucher_id,
+            Voucher.is_active == True,
+            Voucher.start_date <= now,
+            Voucher.end_date >= now,
+            Voucher.used_count < Voucher.usage_limit
+        ).with_for_update()
+    )
+    voucher = result.scalar_one_or_none()
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Voucher not available")
+    
+    # Pastikan user belum pernah claim voucher ini
+    existing = await db.execute(
+        select(UserVoucher).where(
+            UserVoucher.user_id == current_user.id,
+            UserVoucher.voucher_id == voucher_id
+        )
+    )
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="You already claimed this voucher")
+    
+    # Pastikan user belum melebihi batas penggunaan per user
+    user_usage = await db.execute(
+        select(func.count()).select_from(UserVoucher).where(
+            UserVoucher.user_id == current_user.id,
+            UserVoucher.voucher_id == voucher_id,
+            UserVoucher.is_used == True
+        )
+    )
+    used_by_user = user_usage.scalar() or 0
+    if used_by_user >= voucher.usage_per_user:
+        raise HTTPException(status_code=400, detail="You have reached the usage limit for this voucher")
+    
+    # [FIX] Race condition masih mungkin terjadi karena tidak ada lock di UserVoucher.
+    # Solusi enterprise: tambahkan unique constraint (user_id, voucher_id) di database.
+    # Sementara ini tetap menggunakan insert biasa, namun dengan harapan constraint mencegah duplikat.
+    db_user_voucher = UserVoucher(
+        user_id=current_user.id,
+        voucher_id=voucher_id
+    )
+    db.add(db_user_voucher)
+    try:
+        await db.commit()
+    except Exception:  # IntegrityError jika constraint dilanggar
+        await db.rollback()
+        raise HTTPException(status_code=400, detail="You already claimed this voucher")
+    await db.refresh(db_user_voucher)
+    
+    return {
+        "id": db_user_voucher.id,
+        "voucher_id": voucher.id,
+        "code": voucher.code,
+        "name": voucher.name,
+        "discount_type": voucher.discount_type,
+        "discount_value": voucher.discount_value,
+        "min_purchase": voucher.min_purchase,
+        "max_discount": voucher.max_discount,
+        "is_used": db_user_voucher.is_used,
+        "claimed_at": db_user_voucher.claimed_at,
+        "used_at": db_user_voucher.used_at
+    }
+
+@router.get("/my", response_model=List[UserVoucherResponse])
+async def get_my_vouchers(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Ambil semua voucher yang sudah di-claim oleh user
+    result = await db.execute(
+        select(UserVoucher).where(UserVoucher.user_id == current_user.id)
+    )
+    user_vouchers = result.scalars().all()
+    
+    response = []
+    for uv in user_vouchers:
+        voucher_result = await db.execute(select(Voucher).where(Voucher.id == uv.voucher_id))
+        voucher = voucher_result.scalar_one_or_none()
+        if voucher:
+            response.append({
+                "id": uv.id,
+                "voucher_id": voucher.id,
+                "code": voucher.code,
+                "name": voucher.name,
+                "discount_type": voucher.discount_type,
+                "discount_value": voucher.discount_value,
+                "min_purchase": voucher.min_purchase,
+                "max_discount": voucher.max_discount,
+                "is_used": uv.is_used,
+                "claimed_at": uv.claimed_at,
+                "used_at": uv.used_at
+            })
+    
+    return response
+
+# ==================== ENDPOINT DINONAKTIFKAN (DEAD CODE / BACKDOOR) ====================
+# [FIX] Nonaktifkan endpoint /apply karena logika voucher sudah diintegrasikan ke create_order (orders.py)
+@router.post("/apply", include_in_schema=False)
+async def apply_voucher(
+    apply_data: ApplyVoucher,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Endpoint ini sudah tidak digunakan lagi. Logika voucher sekarang di dalam create_order.
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail="This endpoint is deprecated. Voucher application is now integrated into the order creation process."
+    )
+
+# [FIX] Nonaktifkan endpoint /confirm karena logika voucher sudah diintegrasikan ke xendit_webhook (payments.py)
+@router.post("/confirm", include_in_schema=False)
+async def confirm_voucher(
+    apply_data: ApplyVoucher,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Endpoint ini sudah tidak digunakan lagi. Logika voucher sekarang di dalam xendit_webhook.
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail="This endpoint is deprecated. Voucher confirmation is now integrated into payment webhook."
+    )
+
+
+========== D:\ecomerce-api\backend\app\routers\wishlist.py ==========
+# wishlist.py
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func, delete
+from typing import List
+from datetime import datetime, timezone
+from app.database import get_db
+from app.models import Wishlist, Product, User
+from app.schemas import WishlistCreate, WishlistResponse
+from app.core.security import get_current_user
+from app.utils.pagination import paginated_response   # FIX: import
+
+router = APIRouter(tags=["wishlist"])
+
+@router.get("/", response_model=dict)   # FIX: ubah response_model
+async def get_wishlist(
+    page: int = 1,
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Hitung total item wishlist user yang belum dihapus
+    total_result = await db.execute(
+        select(func.count()).select_from(Wishlist).where(
+            Wishlist.user_id == current_user.id,
+            Wishlist.is_deleted == False
+        )
+    )
+    total = total_result.scalar()
+
+    # Ambil item wishlist user
+    result = await db.execute(
+        select(Wishlist).where(
+            Wishlist.user_id == current_user.id,
+            Wishlist.is_deleted == False
+        )
+        .offset((page - 1) * limit)
+        .limit(limit)
+    )
+    wishlist_items = result.scalars().all()
+
+    # Bangun response dengan detail produk (filter produk yang sudah dihapus)
+    response_items = []
+    for item in wishlist_items:
+        product_result = await db.execute(
+            select(Product).where(
+                Product.id == item.product_id,
+                Product.is_deleted == False
+            )
+        )
+        product = product_result.scalar_one_or_none()
+        if product:
+            response_items.append({
+                "id": item.id,
+                "user_id": item.user_id,
+                "product_id": item.product_id,
+                "product_name": product.product_name,
+                "product_price": product.price,
+                "product_image_url": product.image_url,
+                "created_at": item.created_at
+            })
+
+    return paginated_response(response_items, page, limit, total)
+
+@router.post("/", response_model=WishlistResponse, status_code=201)
+async def add_to_wishlist(
+    wishlist_item: WishlistCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Cek apakah produk ada dan belum dihapus
+    product_result = await db.execute(
+        select(Product).where(
+            Product.id == wishlist_item.product_id,
+            Product.is_deleted == False
+        )
+    )
+    product = product_result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    # Cek apakah produk sudah ada di wishlist user
+    existing_result = await db.execute(
+        select(Wishlist).where(
+            Wishlist.user_id == current_user.id,
+            Wishlist.product_id == wishlist_item.product_id,
+            Wishlist.is_deleted == False
+        )
+    )
+    existing = existing_result.scalar_one_or_none()
+    if existing:
+        raise HTTPException(status_code=400, detail="Product already in wishlist")
+
+    # Tambahkan ke wishlist
+    db_wishlist = Wishlist(
+        user_id=current_user.id,
+        product_id=wishlist_item.product_id
+    )
+    db.add(db_wishlist)
+    await db.commit()
+    await db.refresh(db_wishlist)
+
+    return {
+        "id": db_wishlist.id,
+        "user_id": db_wishlist.user_id,
+        "product_id": db_wishlist.product_id,
+        "product_name": product.product_name,
+        "product_price": product.price,
+        "product_image_url": product.image_url,
+        "created_at": db_wishlist.created_at
+    }
+
+@router.delete("/{product_id}", status_code=204)
+async def remove_from_wishlist(
+    product_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # Soft delete item wishlist berdasarkan product_id
+    result = await db.execute(
+        select(Wishlist).where(
+            Wishlist.user_id == current_user.id,
+            Wishlist.product_id == product_id,
+            Wishlist.is_deleted == False
+        )
+    )
+    wishlist_item = result.scalar_one_or_none()
+    if not wishlist_item:
+        raise HTTPException(status_code=404, detail=f"Wishlist item with product_id {product_id} not found")
+
+    wishlist_item.is_deleted = True
+    wishlist_item.deleted_at = datetime.now(timezone.utc)
+    await db.commit()
+    return None
+
+
+========== D:\ecomerce-api\backend\app\schemas.py ==========
+# schemas.py
+
+from pydantic import BaseModel, EmailStr, field_validator, Field
+from typing import Optional, List
+from datetime import datetime
+from app.core.enums import OrderStatus, PaymentStatus
+
+# ==================== AUTH SCHEMAS ====================
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def password_length(cls, v):
+        # Validasi panjang password (min 8, max 72 karena bcrypt)
+        if len(v) > 72:
+            raise ValueError("Password cannot exceed 72 characters")
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        return v
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    is_active: bool
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    is_deleted: bool = False
+    is_admin: bool = False
+
+    model_config = {"from_attributes": True}
+
+class Token(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+# ==================== USER SCHEMAS ====================
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+
+# ==================== PRODUCT SCHEMAS ====================
+class ProductBase(BaseModel):
+    product_name: str
+    price: float
+    stock: int
+    image_url: Optional[str] = None
+    description: Optional[str] = None
+    category_id: Optional[int] = None
+
+    @field_validator("price")
+    @classmethod
+    def price_positive(cls, v):
+        if v <= 0:
+            raise ValueError("Price must be greater than 0")
+        return v
+
+    @field_validator("stock")
+    @classmethod
+    def stock_non_negative(cls, v):
+        if v < 0:
+            raise ValueError("Stock cannot be negative")
+        return v
+
+class ProductCreate(ProductBase):
+    pass
+
+class ProductResponse(ProductBase):
+    id: int
+    is_deleted: bool = False
+    created_at: datetime
+    average_rating: Optional[float] = 0.0
+    total_reviews: Optional[int] = 0
+
+    model_config = {"from_attributes": True}
+
+# ==================== CATEGORY SCHEMAS ====================
+class CategoryBase(BaseModel):
+    name: str
+    slug: str
+
+class CategoryCreate(CategoryBase):
+    pass
+
+class CategoryResponse(CategoryBase):
+    id: int
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+# ==================== CART SCHEMAS ====================
+class CartCreate(BaseModel):
+    product_id: int
+    quantity: int = Field(1, ge=1, description="Quantity must be at least 1")
+
+class CartUpdate(BaseModel):
+    quantity: int = Field(..., ge=1, description="Quantity must be at least 1")
+
+class CartResponse(BaseModel):
+    id: int
+    user_id: int
+    product_id: int
+    quantity: int
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+# ==================== ORDER SCHEMAS ====================
+class OrderCreate(BaseModel):
+    shipping_address: Optional[str] = None
+    cart_item_ids: List[int] = []
+    voucher_code: Optional[str] = None  # â† PATCH 2: tambah field
+
+class OrderItemResponse(BaseModel):
+    id: int
+    order_id: int
+    product_id: int
+    product_name: str
+    quantity: int
+    price_at_purchase: float
+    subtotal: float
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class OrderResponse(BaseModel):
+    id: int
+    user_id: int
+    total_price: float
+    status: OrderStatus
+    shipping_address: Optional[str] = None
+    discount_amount: Optional[float] = 0.0   # â† PATCH 2: tambah
+    final_price: Optional[float] = None      # â† PATCH 2: tambah
+    created_at: datetime
+    items: List[OrderItemResponse] = []
+
+    model_config = {"from_attributes": True}
+
+class OrderWithPaymentResponse(OrderResponse):
+    invoice_url: Optional[str] = None
+
+class PaymentCreate(BaseModel):
+    order_id: int
+    method: str
+
+class PaymentResponse(BaseModel):
+    id: int
+    order_id: int
+    method: str
+    amount: float
+    status: PaymentStatus
+    payment_url: Optional[str] = None
+    paid_at: Optional[datetime] = None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class WishlistCreate(BaseModel):
+    product_id: int
+
+class WishlistResponse(BaseModel):
+    id: int
+    user_id: int
+    product_id: int
+    product_name: str
+    product_price: float
+    product_image_url: Optional[str] = None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class ReviewCreate(BaseModel):
+    product_id: int
+    rating: int = Field(ge=1, le=5)
+    comment: Optional[str] = None
+
+class ReviewUpdate(BaseModel):
+    rating: Optional[int] = Field(None, ge=1, le=5)
+    comment: Optional[str] = None
+
+class ReviewResponse(BaseModel):
+    id: int
+    user_id: int
+    user_name: Optional[str] = None
+    product_id: int
+    rating: int
+    comment: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class VoucherCreate(BaseModel):
+    code: str
+    name: str
+    description: Optional[str] = None
+    discount_type: str
+    discount_value: float
+    min_purchase: float = 0
+    max_discount: Optional[float] = None
+    usage_limit: int = 1
+    usage_per_user: int = 1
+    start_date: datetime
+    end_date: datetime
+
+class VoucherUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    discount_type: Optional[str] = None
+    discount_value: Optional[float] = None
+    min_purchase: Optional[float] = None
+    max_discount: Optional[float] = None
+    usage_limit: Optional[int] = None
+    usage_per_user: Optional[int] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    is_active: Optional[bool] = None
+
+class VoucherResponse(BaseModel):
+    id: int
+    code: str
+    name: str
+    description: Optional[str] = None
+    discount_type: str
+    discount_value: float
+    min_purchase: float
+    max_discount: Optional[float] = None
+    usage_limit: int
+    usage_per_user: int
+    used_count: int
+    start_date: datetime
+    end_date: datetime
+    is_active: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class UserVoucherResponse(BaseModel):
+    id: int
+    voucher_id: int
+    code: str
+    name: str
+    discount_type: str
+    discount_value: float
+    min_purchase: float
+    max_discount: Optional[float] = None
+    is_used: bool
+    claimed_at: datetime
+    used_at: Optional[datetime] = None
+
+class ApplyVoucher(BaseModel):
+    code: str
+    order_id: int
+
+class AddressCreate(BaseModel):
+    label: str
+    recipient_name: str
+    phone: str
+    full_address: str
+    city: str
+    province: str
+    postal_code: str
+    is_default: bool = False
+
+class AddressUpdate(BaseModel):
+    label: Optional[str] = None
+    recipient_name: Optional[str] = None
+    phone: Optional[str] = None
+    full_address: Optional[str] = None
+    city: Optional[str] = None
+    province: Optional[str] = None
+    postal_code: Optional[str] = None
+    is_default: Optional[bool] = None
+
+class AddressResponse(BaseModel):
+    id: int
+    user_id: int
+    label: str
+    recipient_name: str
+    phone: str
+    full_address: str
+    city: str
+    province: str
+    postal_code: str
+    is_default: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+========== D:\ecomerce-api\backend\app\services\__init__.py ==========
+
+
+========== D:\ecomerce-api\backend\app\services\auth_service.py ==========
+# auth_service.py
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from app.models import User
+from app.core.security import hash_password, verify_password
+
+async def get_user_by_email(db: AsyncSession, email: str):
+    result = await db.execute(select(User).where(User.email == email))
+    return result.scalar_one_or_none()
+
+async def register_user(db: AsyncSession, email: str, password: str):
+    # Cek apakah email sudah terdaftar
+    existing = await get_user_by_email(db, email)
+    if existing:
+        return None
+    # Hash password dan simpan user baru
+    hashed = hash_password(password)
+    user = User(email=email, hashed_password=hashed)
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+async def authenticate_user(db: AsyncSession, email: str, password: str):
+    # Ambil user berdasarkan email
+    user = await get_user_by_email(db, email)
+    if not user:
+        return None
+    # Verifikasi password
+    if not verify_password(password, user.hashed_password):
+        return None
+    return user
+
+
+========== D:\ecomerce-api\backend\app\services\review_service.py ==========
+# review_service.py
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from app.models import Review, Product
+
+async def update_product_rating(db: AsyncSession, product_id: int):
+    """Hitung ulang rata-rata rating dan total review untuk suatu produk"""
+    # Hitung rata-rata rating dan jumlah review aktif
+    result = await db.execute(
+        select(func.avg(Review.rating), func.count(Review.id))
+        .where(Review.product_id == product_id, Review.is_deleted == False)
+    )
+    avg_rating, total_reviews = result.first()
+    
+    # Update produk
+    product_result = await db.execute(select(Product).where(Product.id == product_id))
+    product = product_result.scalar_one_or_none()
+    if product:
+        product.average_rating = round(float(avg_rating), 2) if avg_rating else 0.0
+        product.total_reviews = total_reviews or 0
+        await db.flush()  # tidak perlu commit, nanti commit di luar
+
+
+========== D:\ecomerce-api\backend\app\services\xendit_service.py ==========
+# xendit_service.py
+import httpx
+import hmac
+import hashlib
+from typing import Dict, Any
+from fastapi import HTTPException
+from app.core.config import settings
+
+class XenditService:
+    def __init__(self):
+        self.api_base_url = settings.XENDIT_API_BASE_URL
+        self.secret_key = settings.XENDIT_SECRET_KEY
+        self.webhook_token = settings.XENDIT_WEBHOOK_TOKEN
+
+    async def create_invoice(self, external_id: str, amount: float, payer_email: str, description: str = "Payment for order") -> Dict[str, Any]:
+        """
+        Create an invoice in Xendit.
+        Returns dict containing 'id', 'invoice_url', etc.
+        """
+        url = f"{self.api_base_url}/v2/invoices"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        # Autentikasi Basic Auth dengan secret key
+        auth = (self.secret_key, "")  # Basic Auth dengan username = secret key, password kosong
+        payload = {
+            "external_id": external_id,
+            "amount": float(amount),
+            "payer_email": payer_email,
+            "description": description,
+            "invoice_duration": 86400,  # 24 jam dalam detik
+            "should_send_email": True,
+        }
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            try:
+                # Kirim request ke Xendit API
+                response = await client.post(url, json=payload, headers=headers, auth=auth)
+                response.raise_for_status()
+                return response.json()
+            except httpx.HTTPStatusError as e:
+                # Tangani error dari Xendit (misal 4xx/5xx)
+                error_detail = e.response.text if e.response else str(e)
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Xendit API error: {error_detail}"
+                )
+            except httpx.RequestError as e:
+                # Tangani error koneksi ke Xendit
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Failed to connect to Xendit: {str(e)}"
+                )
+
+    def verify_webhook_token(self, callback_token: str) -> bool:
+        """Verify the webhook callback token from Xendit."""
+        # Verifikasi token webhook untuk keamanan
+        return callback_token == self.webhook_token
+
+    def verify_webhook_signature(self, payload_body: bytes, signature_header: str) -> bool:
+        """
+        Verify HMAC-SHA256 signature of webhook payload using Xendit secret key.
+        """
+        if not signature_header:
+            return False
+        expected_signature = hmac.new(
+            self.secret_key.encode('utf-8'),
+            payload_body,
+            hashlib.sha256
+        ).hexdigest()
+        return hmac.compare_digest(expected_signature, signature_header)
+
+xendit_service = XenditService()
+
+
+========== D:\ecomerce-api\backend\app\utils\pagination.py ==========
+# === FILE: app/utils/pagination.py ===
+import math
+from typing import TypeVar, List, Any
+from pydantic import BaseModel
+
+T = TypeVar("T")
+
+class PaginationParams(BaseModel):
+    page: int = 1
+    limit: int = 10
+
+    @property
+    def offset(self) -> int:
+        return (self.page - 1) * self.limit
+
+class PaginationMeta(BaseModel):
+    current_page: int
+    per_page: int
+    total_data: int
+    total_pages: int
+    next_page: int | None
+    prev_page: int | None
+
+def paginate(page: int, limit: int, total: int) -> PaginationMeta:
+    total_pages = math.ceil(total / limit) if limit > 0 else 1
+    return PaginationMeta(
+        current_page=page,
+        per_page=limit,
+        total_data=total,
+        total_pages=total_pages,
+        next_page=page + 1 if page < total_pages else None,
+        prev_page=page - 1 if page > 1 else None
+    )
+
+def paginated_response(data: List[Any], page: int, limit: int, total: int) -> dict:
+    # [FIX] Batasi limit maksimal 100 untuk mencegah DoS
+    limit = min(limit, 100)
+    """
+    Mengkonversi objek SQLAlchemy ke dict jika memiliki method `__dict__` atau `to_dict`,
+    namun tetap aman untuk data yang sudah berupa dict.
+    """
+    serialized_data = []
+    for item in data:
+        if hasattr(item, "model_dump"):      # Pydantic model
+            serialized_data.append(item.model_dump())
+        elif hasattr(item, "__dict__"):      # SQLAlchemy model biasa
+            # Hindari atribut internal SQLAlchemy
+            item_dict = {c.key: getattr(item, c.key) for c in item.__table__.columns}
+            serialized_data.append(item_dict)
+        else:
+            serialized_data.append(item)     # sudah dict atau tipe lain
+    
+    return {
+        "status": "success",
+        "data": serialized_data,
+        "pagination": paginate(page, limit, total).model_dump()
+    }
+
+
+========== D:\ecomerce-api\backend\app\utils\uploader.py ==========
+import asyncio
+import cloudinary
+import cloudinary.uploader
+from fastapi import UploadFile, HTTPException
+from app.core.config import settings
+
+cloudinary.config(
+    cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+    api_key=settings.CLOUDINARY_API_KEY,
+    api_secret=settings.CLOUDINARY_API_SECRET
+)
+
+async def upload_image(file: UploadFile, folder: str = "products") -> str:
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/jpg"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type. Allowed: {', '.join(allowed_types)}"
+        )
+
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    file.file.seek(0)
+
+    if file_size > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=400,
+            detail="File too large. Max 5MB"
+        )
+
+    try:
+        # FIX: jalankan upload secara synchronous di thread pool
+        def _upload():
+            return cloudinary.uploader.upload(
+                file.file,
+                folder=folder,
+                transformation=[
+                    {"width": 800, "height": 800, "crop": "limit"},
+                    {"quality": "auto"},
+                    {"fetch_format": "auto"}
+                ]
+            )
+        upload_result = await asyncio.to_thread(_upload)
+        return upload_result['secure_url']
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Upload failed: {str(e)}"
+        )
+

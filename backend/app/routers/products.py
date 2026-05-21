@@ -129,8 +129,7 @@ async def get_product(
 ):
     result = await db.execute(
         select(Product).where(
-            Product.id == product_id,
-            Product.is_deleted == False
+            Product.id == product_id,           
         )
     )
     product = result.scalar_one_or_none()
