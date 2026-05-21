@@ -1,4 +1,5 @@
 import asyncio
+import time
 import cloudinary
 import cloudinary.uploader
 from fastapi import UploadFile, HTTPException
@@ -27,9 +28,8 @@ async def upload_image(file: UploadFile, folder: str = "products") -> str:
             status_code=400,
             detail="File too large. Max 5MB"
         )
-
+    
     try:
-        # FIX: jalankan upload secara synchronous di thread pool
         def _upload():
             return cloudinary.uploader.upload(
                 file.file,
@@ -40,8 +40,16 @@ async def upload_image(file: UploadFile, folder: str = "products") -> str:
                     {"fetch_format": "auto"}
                 ]
             )
-        upload_result = await asyncio.to_thread(_upload)
+        start = time.time()
+        upload_result = await asyncio.wait_for(asyncio.to_thread(_upload), timeout=30.0)
+        elapsed = time.time() - start
+        print(f"Cloudinary upload took {elapsed:.2f} seconds")
         return upload_result['secure_url']
+    except asyncio.TimeoutError:
+        raise HTTPException(
+            status_code=408,
+            detail="Upload to Cloudinary timed out after 30 seconds"
+        )
     except Exception as e:
         raise HTTPException(
             status_code=500,
