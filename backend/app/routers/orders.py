@@ -8,7 +8,7 @@ from typing import List
 from decimal import Decimal
 from datetime import datetime, timezone, timedelta
 from app.database import get_db
-from app.models import Order, OrderItem, Cart, Product, User, Payment, Voucher, VoucherUsage
+from app.models import Order, OrderItem, Cart, Product, User, Payment, Voucher, VoucherUsage, StockHistory
 from app.schemas import OrderCreate, OrderResponse, OrderItemResponse, OrderWithPaymentResponse
 from app.core.security import get_current_user, require_admin
 from app.utils.pagination import paginated_response
@@ -128,6 +128,15 @@ async def create_order(
             )
 
         product.stock -= item.quantity
+        stock_history = StockHistory(
+            product_id=product.id,
+            old_stock=product.stock + item.quantity,
+            new_stock=product.stock,
+            change_amount=-item.quantity,
+            reason="order_created",
+            user_id=current_user.id
+        )
+        db.add(stock_history)
         subtotal = product.price * item.quantity
         total_price += subtotal
         order_items_data.append({
@@ -484,6 +493,15 @@ async def update_order_status(
             product = product_result.scalar_one_or_none()
             if product:
                 product.stock += item.quantity
+                stock_history = StockHistory(
+                    product_id=product.id,
+                    old_stock=product.stock - item.quantity,
+                    new_stock=product.stock,
+                    change_amount=item.quantity,
+                    reason="order_cancelled",
+                    user_id=admin.id
+                )
+                db.add(stock_history)
 
         if order.applied_voucher_id is not None:
             voucher_result = await db.execute(
@@ -558,7 +576,16 @@ async def user_cancel_order(
         product = product_result.scalar_one_or_none()
         if product:
             product.stock += item.quantity
-
+            stock_history = StockHistory(
+                    product_id=product.id,
+                    old_stock=product.stock - item.quantity,
+                    new_stock=product.stock,
+                    change_amount=item.quantity,
+                    reason="order_cancelled",
+                    user_id=current_user.id
+                )
+            db.add(stock_history)
+            
     if order.applied_voucher_id is not None:
         voucher_result = await db.execute(
             select(Voucher).where(Voucher.id == order.applied_voucher_id).with_for_update()
@@ -628,6 +655,15 @@ async def auto_cancel_expired_orders(db: AsyncSession) -> int:
             product = product_result.scalar_one_or_none()
             if product:
                 product.stock += item.quantity
+                stock_history = StockHistory(
+                    product_id=product.id,
+                    old_stock=product.stock - item.quantity,
+                    new_stock=product.stock,
+                    change_amount=item.quantity,
+                    reason="order_cancelled",
+                    user_id=none
+                )
+                db.add(stock_history)
 
         if order.applied_voucher_id is not None:
             voucher_result = await db.execute(

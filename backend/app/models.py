@@ -108,6 +108,7 @@ class OrderItem(Base):
     order = relationship("Order", back_populates="items")
     product = relationship("Product", lazy="selectin")
 
+
 class Payment(Base):
     __tablename__ = "payments"
 
@@ -240,3 +241,18 @@ class RefreshToken(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     revoked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+class StockHistory(Base):
+    __tablename__ = "stock_history"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    old_stock: Mapped[int]
+    new_stock: Mapped[int]
+    change_amount: Mapped[int]
+    reason: Mapped[str]
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
